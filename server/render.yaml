@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: moviezone-server
+    name: rest-express-server
     env: node
     plan: starter
     buildCommand: npm install && npm run build
@@ -11,5 +11,5 @@ services:
       - key: PORT
         fromService:
           type: web
-          name: moviezone-server
+          name: rest-express-server
           property: port

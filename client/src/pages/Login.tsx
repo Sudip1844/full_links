@@ -22,7 +22,8 @@ const Login = () => {
   useEffect(() => {
     const fetchCredentials = async () => {
       try {
-        const response = await fetch('/api/admin-config');
+        const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const response = await fetch(`${API_BASE_URL}/api/admin-config`);
         if (response.ok) {
           const config = await response.json();
           ADMIN_CREDENTIALS.id = config.adminId;

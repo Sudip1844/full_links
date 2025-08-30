@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 
 // API Configuration
-const API_BASE_URL = 'https://movielink-server.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 // Helper function to build API URLs
 const buildApiUrl = (endpoint: string): string => {
