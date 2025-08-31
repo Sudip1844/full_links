@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { MovieLink, InsertMovieLink, ApiToken, InsertApiToken, QualityEpisode, InsertQualityEpisode, QualityZip, InsertQualityZip } from "@shared/schema";
+import type { MovieLink, InsertMovieLink, ApiToken, InsertApiToken, QualityEpisode, InsertQualityEpisode, QualityZip, InsertQualityZip } from "@/types/schema";
 
 const AdminPanel = () => {
   const [, setLocation] = useLocation();
