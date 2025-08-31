@@ -154,7 +154,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         adsEnabled: true, // Always true for API created links
       });
       
-      const shortUrl = `${req.protocol}://${req.get('host')}/m/${shortId}`;
+      const shortUrl = `https://full-links.onrender.com/m/${shortId}`;
       
       res.status(201).json({
         success: true,
@@ -210,7 +210,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         adsEnabled: true, // Always true for API created links
       });
       
-      const shortUrl = `${req.protocol}://${req.get('host')}/m/${shortId}`;
+      const shortUrl = `https://full-links.onrender.com/m/${shortId}`;
       
       res.status(201).json({
         success: true,
@@ -534,7 +534,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       // Return the short URL
-      const shortUrl = `${req.protocol}://${req.get('host')}/e/${shortId}`;
+      const shortUrl = `https://full-links.onrender.com/e/${shortId}`;
       res.status(201).json({ 
         shortUrl,
         shortId,
@@ -679,7 +679,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       // Return the short URL
-      const shortUrl = `${req.protocol}://${req.get('host')}/z/${shortId}`;
+      const shortUrl = `https://full-links.onrender.com/z/${shortId}`;
       res.status(201).json({ 
         shortUrl,
         shortId,
