@@ -804,12 +804,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!movieLink && !qualityMovieLink) {
         // For expired/missing links, redirect to redirect page with error parameter
-        return res.redirect("/redirect?error=expired");
+        return res.redirect("https://mkvmoviepoint.netlify.app/redirect?error=expired");
       }
 
       const link = movieLink || qualityMovieLink;
       if (!link) {
-        return res.redirect("/redirect?error=expired");
+        return res.redirect("https://mkvmoviepoint.netlify.app/redirect?error=expired");
       }
 
       // Check if this IP has seen ads for this shortId in the last 5 minutes
@@ -835,10 +835,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Encode link data as URL parameter
       const encodedLinkData = encodeURIComponent(JSON.stringify(linkData));
-      res.redirect(`/redirect?link=${encodedLinkData}`);
+      res.redirect(`https://mkvmoviepoint.netlify.app/redirect?link=${encodedLinkData}`);
     } catch (error) {
       console.error("Error in redirect route:", error);
-      res.redirect("/redirect?error=expired");
+      res.redirect("https://mkvmoviepoint.netlify.app/redirect?error=expired");
     }
   });
 
@@ -853,7 +853,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!qualityEpisode) {
         // For expired/missing episodes, redirect to redirect page with error parameter
-        return res.redirect("/redirect?error=expired");
+        return res.redirect("https://mkvmoviepoint.netlify.app/redirect?error=expired");
       }
 
       // Check if this IP has seen ads for this shortId in the last 5 minutes
@@ -871,10 +871,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Encode link data as URL parameter
       const encodedLinkData = encodeURIComponent(JSON.stringify(linkData));
-      res.redirect(`/redirect?link=${encodedLinkData}`);
+      res.redirect(`https://mkvmoviepoint.netlify.app/redirect?link=${encodedLinkData}`);
     } catch (error) {
       console.error("Error in episode redirect route:", error);
-      res.redirect("/redirect?error=expired");
+      res.redirect("https://mkvmoviepoint.netlify.app/redirect?error=expired");
     }
   });
 
@@ -920,7 +920,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!qualityZip) {
         // For expired/missing zips, redirect to redirect page with error parameter
-        return res.redirect("/redirect?error=expired");
+        return res.redirect("https://mkvmoviepoint.netlify.app/redirect?error=expired");
       }
 
       // Check if this IP has seen ads for this shortId in the last 5 minutes
@@ -944,10 +944,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Encode link data as URL parameter
       const encodedLinkData = encodeURIComponent(JSON.stringify(linkData));
-      res.redirect(`/redirect?link=${encodedLinkData}`);
+      res.redirect(`https://mkvmoviepoint.netlify.app/redirect?link=${encodedLinkData}`);
     } catch (error) {
       console.error("Error in zip redirect route:", error);
-      res.redirect("/redirect?error=expired");
+      res.redirect("https://mkvmoviepoint.netlify.app/redirect?error=expired");
     }
   });
 
