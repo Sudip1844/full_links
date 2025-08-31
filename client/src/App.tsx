@@ -20,6 +20,8 @@ const App = () => (
           <Route path="/admin" component={AdminPanel} />
           <Route path="/redirect" component={RedirectPage} />
           <Route path="/m/:id" component={RedirectPage} />
+          <Route path="/e/:id" component={RedirectPage} />
+          <Route path="/z/:id" component={RedirectPage} />
           <Route component={NotFound} />
         </Switch>
       </Router>

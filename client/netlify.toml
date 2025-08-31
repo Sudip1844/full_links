@@ -7,6 +7,21 @@
   NPM_VERSION = "10"
 
 [[redirects]]
+  from = "/m/*"
+  to = "https://full-links.onrender.com/m/:splat"
+  status = 302
+
+[[redirects]]
+  from = "/e/*"
+  to = "https://full-links.onrender.com/e/:splat"
+  status = 302
+
+[[redirects]]
+  from = "/z/*"
+  to = "https://full-links.onrender.com/z/:splat"
+  status = 302
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
