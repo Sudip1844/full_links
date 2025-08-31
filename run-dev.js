@@ -9,8 +9,8 @@ const __dirname = dirname(__filename);
 
 console.log('Starting MovieZone development server...');
 
-// Start the server using tsx directly
-const serverProcess = spawn('tsx', ['index.ts'], {
+// Start the server using tsx from node_modules
+const serverProcess = spawn('npx', ['tsx', 'index.ts'], {
   cwd: join(__dirname, 'server'),
   stdio: 'inherit',
   shell: true,
