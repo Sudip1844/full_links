@@ -1,15 +1,12 @@
 services:
   - type: web
-    name: rest-express-server
+    name: moviezone-server
     env: node
     plan: starter
-    buildCommand: npm install && npm run build
+    buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        fromService:
-          type: web
-          name: rest-express-server
-          property: port
+      - key: NPM_CONFIG_PRODUCTION
+        value: false

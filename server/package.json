@@ -5,9 +5,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx index.ts",
-    "build": "echo 'Build completed successfully'",
+    "build": "echo 'No build step required for TSX deployment'",
     "start": "NODE_ENV=production tsx index.ts",
-    "check": "tsc",
+    "check": "tsc --noEmit",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
