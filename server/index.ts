@@ -15,9 +15,14 @@ export function log(message: string, source = "express") {
 
 const app = express();
 
-// Enable CORS for cross-origin requests (client on Replit, server on Render)
+// Enable CORS for cross-origin requests (client on Netlify, server on Render)
 app.use(cors({
-  origin: process.env.CLIENT_URL || '*', // Set CLIENT_URL to your Replit URL
+  origin: [
+    'https://mkvmoviepoint.netlify.app',
+    'http://localhost:5173', // For local development
+    'http://localhost:5000', // For local development
+    process.env.CLIENT_URL || '*'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
