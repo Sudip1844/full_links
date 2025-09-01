@@ -578,13 +578,26 @@ const RedirectPage = () => {
       <div style={{ minHeight: '100vh', background: '#f8f9fa' }}>
         <header style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', padding: '30px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: '1.8em', marginBottom: '10px', textShadow: '0 2px 4px rgba(0,0,0,0.3)', margin: '0 0 10px 0' }}>
-            🎬 MovieZone — Your One-Stop Movie Destination
+            🎬 <a href="https://geographicalpaperworkmovie.com/tjuyzmpz59?key=d9970f2f8af7c58ee2052b35a9338eb3" target="_blank" style={{ color: 'white', textDecoration: 'none' }}>MovieZone</a> — Your One-Stop Movie Destination
           </h1>
           <p style={{ fontSize: '1em', opacity: '0.9', margin: '10px 0 0 0' }}>Welcome to your favorite movie world</p>
         </header>
 
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
 
+          {/* Social Bar Ads - Position 1 */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <script type="text/javascript" dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  var script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.src = '//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js';
+                  document.head.appendChild(script);
+                })();
+              `
+            }} />
+          </div>
 
           {/* Content Sections */}
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
@@ -592,9 +605,47 @@ const RedirectPage = () => {
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Bollywood, Hollywood, South Indian, Web Series, Bengali, Animation, Comedy, Action, Romance, Horror, Thriller, Sci-Fi, K-Drama, and 18+ content.</p>
           </div>
 
+          {/* Native Banner Ads - Position 2 */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <script async="async" data-cfasync="false" dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  var div = document.createElement('div');
+                  div.id = 'container-6b5d17fdf8cec3df50a638f17686be2';
+                  document.currentScript.parentNode.insertBefore(div, document.currentScript);
+                  var script = document.createElement('script');
+                  script.async = true;
+                  script.src = '//geographicalpaperworkmovie.com/6b5d17fdf8cec3df50a638f17686be2/invoke.js';
+                  document.head.appendChild(script);
+                })();
+              `
+            }} />
+          </div>
+
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Multi-Language Movie Support</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Bengali, Hindi, English, Tamil, Telugu, Gujarati — something for everyone!</p>
+          </div>
+
+          {/* Banner 320x50 - Smallest Height */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <script type="text/javascript" dangerouslySetInnerHTML={{
+              __html: `
+                atOptions = {
+                  'key' : 'b2793c0e8f1efb396cc1e0a852b97f29',
+                  'format' : 'iframe',
+                  'height' : 50,
+                  'width' : 320,
+                  'params' : {}
+                };
+                (function() {
+                  var script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.src = '//geographicalpaperworkmovie.com/b2793c0e8f1efb396cc1e0a852b97f29/invoke.js';
+                  document.head.appendChild(script);
+                })();
+              `
+            }} />
           </div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
@@ -602,9 +653,51 @@ const RedirectPage = () => {
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Descriptions, screenshots, cast information, and high-speed download links.</p>
           </div>
 
+          {/* Banner 468x60 */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <script type="text/javascript" dangerouslySetInnerHTML={{
+              __html: `
+                atOptions = {
+                  'key' : '61d8c3168f7e4d6ac628e8b4373161ed',
+                  'format' : 'iframe',
+                  'height' : 60,
+                  'width' : 468,
+                  'params' : {}
+                };
+                (function() {
+                  var script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.src = '//geographicalpaperworkmovie.com/61d8c3168f7e4d6ac628e8b4373161ed/invoke.js';
+                  document.head.appendChild(script);
+                })();
+              `
+            }} />
+          </div>
+
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ No Sign-Up Required</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Open, browse, and download instantly.</p>
+          </div>
+
+          {/* Banner 728x90 */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <script type="text/javascript" dangerouslySetInnerHTML={{
+              __html: `
+                atOptions = {
+                  'key' : 'aa93afc5b7ec740bcfeb71a8ba4e7df6',
+                  'format' : 'iframe',
+                  'height' : 90,
+                  'width' : 728,
+                  'params' : {}
+                };
+                (function() {
+                  var script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.src = '//geographicalpaperworkmovie.com/aa93afc5b7ec740bcfeb71a8ba4e7df6/invoke.js';
+                  document.head.appendChild(script);
+                })();
+              `
+            }} />
           </div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
@@ -612,14 +705,77 @@ const RedirectPage = () => {
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Intelligent recommendations based on your interests.</p>
           </div>
 
+          {/* Banner 300x250 */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <script type="text/javascript" dangerouslySetInnerHTML={{
+              __html: `
+                atOptions = {
+                  'key' : '7ba5369fa5813ef798b6e4e47c890586',
+                  'format' : 'iframe',
+                  'height' : 250,
+                  'width' : 300,
+                  'params' : {}
+                };
+                (function() {
+                  var script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.src = '//geographicalpaperworkmovie.com/7ba5369fa5813ef798b6e4e47c890586/invoke.js';
+                  document.head.appendChild(script);
+                })();
+              `
+            }} />
+          </div>
+
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Reward Video System</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Unlock movies after a quick 10 second ad view.</p>
           </div>
 
+          {/* Banner 160x300 */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <script type="text/javascript" dangerouslySetInnerHTML={{
+              __html: `
+                atOptions = {
+                  'key' : '78c4cdacf26e025218f6b1ea37a1c1a9',
+                  'format' : 'iframe',
+                  'height' : 300,
+                  'width' : 160,
+                  'params' : {}
+                };
+                (function() {
+                  var script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.src = '//geographicalpaperworkmovie.com/78c4cdacf26e025218f6b1ea37a1c1a9/invoke.js';
+                  document.head.appendChild(script);
+                })();
+              `
+            }} />
+          </div>
+
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Mobile-Optimized Interface</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Fast, clean experience even on slow internet.</p>
+          </div>
+
+          {/* Banner 160x600 - Largest Height */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <script type="text/javascript" dangerouslySetInnerHTML={{
+              __html: `
+                atOptions = {
+                  'key' : '9305aa746e0c0a43feb5c8517442be9d',
+                  'format' : 'iframe',
+                  'height' : 600,
+                  'width' : 160,
+                  'params' : {}
+                };
+                (function() {
+                  var script = document.createElement('script');
+                  script.type = 'text/javascript';
+                  script.src = '//geographicalpaperworkmovie.com/9305aa746e0c0a43feb5c8517442be9d/invoke.js';
+                  document.head.appendChild(script);
+                })();
+              `
+            }} />
           </div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
