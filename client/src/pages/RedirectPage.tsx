@@ -170,6 +170,132 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
+  // Load ads scripts when component mounts and ads are enabled
+  useEffect(() => {
+    if (!movieData?.adsEnabled || movieData?.skipTimer || countdown > 0) return;
+
+    // Load Social Bar Ads
+    const socialBarScript = document.createElement('script');
+    socialBarScript.type = 'text/javascript';
+    socialBarScript.src = '//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js';
+    document.head.appendChild(socialBarScript);
+
+    // Load Native Banner Ads
+    const nativeBannerScript = document.createElement('script');
+    nativeBannerScript.async = true;
+    nativeBannerScript.src = '//geographicalpaperworkmovie.com/6b5d17fdf8cec3df50a638f17686be2/invoke.js';
+    document.head.appendChild(nativeBannerScript);
+
+    // Load Banner 320x50
+    window.atOptions = {
+      'key': 'b2793c0e8f1efb396cc1e0a852b97f29',
+      'format': 'iframe',
+      'height': 50,
+      'width': 320,
+      'params': {}
+    };
+    const banner320Script = document.createElement('script');
+    banner320Script.type = 'text/javascript';
+    banner320Script.src = '//geographicalpaperworkmovie.com/b2793c0e8f1efb396cc1e0a852b97f29/invoke.js';
+    document.head.appendChild(banner320Script);
+
+    // Load Banner 468x60
+    const banner468Script = document.createElement('script');
+    banner468Script.type = 'text/javascript';
+    banner468Script.innerHTML = `
+      atOptions = {
+        'key': '61d8c3168f7e4d6ac628e8b4373161ed',
+        'format': 'iframe',
+        'height': 60,
+        'width': 468,
+        'params': {}
+      };
+    `;
+    document.head.appendChild(banner468Script);
+    
+    const banner468InvokeScript = document.createElement('script');
+    banner468InvokeScript.type = 'text/javascript';
+    banner468InvokeScript.src = '//geographicalpaperworkmovie.com/61d8c3168f7e4d6ac628e8b4373161ed/invoke.js';
+    document.head.appendChild(banner468InvokeScript);
+
+    // Load Banner 728x90
+    const banner728Script = document.createElement('script');
+    banner728Script.type = 'text/javascript';
+    banner728Script.innerHTML = `
+      atOptions = {
+        'key': 'aa93afc5b7ec740bcfeb71a8ba4e7df6',
+        'format': 'iframe',
+        'height': 90,
+        'width': 728,
+        'params': {}
+      };
+    `;
+    document.head.appendChild(banner728Script);
+    
+    const banner728InvokeScript = document.createElement('script');
+    banner728InvokeScript.type = 'text/javascript';
+    banner728InvokeScript.src = '//geographicalpaperworkmovie.com/aa93afc5b7ec740bcfeb71a8ba4e7df6/invoke.js';
+    document.head.appendChild(banner728InvokeScript);
+
+    // Load Banner 300x250
+    const banner300Script = document.createElement('script');
+    banner300Script.type = 'text/javascript';
+    banner300Script.innerHTML = `
+      atOptions = {
+        'key': '7ba5369fa5813ef798b6e4e47c890586',
+        'format': 'iframe',
+        'height': 250,
+        'width': 300,
+        'params': {}
+      };
+    `;
+    document.head.appendChild(banner300Script);
+    
+    const banner300InvokeScript = document.createElement('script');
+    banner300InvokeScript.type = 'text/javascript';
+    banner300InvokeScript.src = '//geographicalpaperworkmovie.com/7ba5369fa5813ef798b6e4e47c890586/invoke.js';
+    document.head.appendChild(banner300InvokeScript);
+
+    // Load Banner 160x300
+    const banner160x300Script = document.createElement('script');
+    banner160x300Script.type = 'text/javascript';
+    banner160x300Script.innerHTML = `
+      atOptions = {
+        'key': '78c4cdacf26e025218f6b1ea37a1c1a9',
+        'format': 'iframe',
+        'height': 300,
+        'width': 160,
+        'params': {}
+      };
+    `;
+    document.head.appendChild(banner160x300Script);
+    
+    const banner160x300InvokeScript = document.createElement('script');
+    banner160x300InvokeScript.type = 'text/javascript';
+    banner160x300InvokeScript.src = '//geographicalpaperworkmovie.com/78c4cdacf26e025218f6b1ea37a1c1a9/invoke.js';
+    document.head.appendChild(banner160x300InvokeScript);
+
+    // Load Banner 160x600
+    const banner160x600Script = document.createElement('script');
+    banner160x600Script.type = 'text/javascript';
+    banner160x600Script.innerHTML = `
+      atOptions = {
+        'key': '9305aa746e0c0a43feb5c8517442be9d',
+        'format': 'iframe',
+        'height': 600,
+        'width': 160,
+        'params': {}
+      };
+    `;
+    document.head.appendChild(banner160x600Script);
+    
+    const banner160x600InvokeScript = document.createElement('script');
+    banner160x600InvokeScript.type = 'text/javascript';
+    banner160x600InvokeScript.src = '//geographicalpaperworkmovie.com/9305aa746e0c0a43feb5c8517442be9d/invoke.js';
+    document.head.appendChild(banner160x600InvokeScript);
+
+  }, [movieData?.adsEnabled, movieData?.skipTimer, countdown]);
+
   const handleContinue = (link: string) => {
     window.location.href = link;
   };
@@ -586,18 +712,7 @@ const RedirectPage = () => {
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
 
           {/* Social Bar Ads - Position 1 */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <script type="text/javascript" dangerouslySetInnerHTML={{
-              __html: `
-                (function() {
-                  var script = document.createElement('script');
-                  script.type = 'text/javascript';
-                  script.src = '//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js';
-                  document.head.appendChild(script);
-                })();
-              `
-            }} />
-          </div>
+          <div id="social-bar-ads" style={{ textAlign: 'center', marginBottom: '20px' }}></div>
 
           {/* Content Sections */}
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
@@ -606,21 +721,7 @@ const RedirectPage = () => {
           </div>
 
           {/* Native Banner Ads - Position 2 */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <script async="async" data-cfasync="false" dangerouslySetInnerHTML={{
-              __html: `
-                (function() {
-                  var div = document.createElement('div');
-                  div.id = 'container-6b5d17fdf8cec3df50a638f17686be2';
-                  document.currentScript.parentNode.insertBefore(div, document.currentScript);
-                  var script = document.createElement('script');
-                  script.async = true;
-                  script.src = '//geographicalpaperworkmovie.com/6b5d17fdf8cec3df50a638f17686be2/invoke.js';
-                  document.head.appendChild(script);
-                })();
-              `
-            }} />
-          </div>
+          <div id="container-6b5d17fdf8cec3df50a638f17686be2" style={{ textAlign: 'center', marginBottom: '20px' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Multi-Language Movie Support</h2>
@@ -628,25 +729,7 @@ const RedirectPage = () => {
           </div>
 
           {/* Banner 320x50 - Smallest Height */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <script type="text/javascript" dangerouslySetInnerHTML={{
-              __html: `
-                atOptions = {
-                  'key' : 'b2793c0e8f1efb396cc1e0a852b97f29',
-                  'format' : 'iframe',
-                  'height' : 50,
-                  'width' : 320,
-                  'params' : {}
-                };
-                (function() {
-                  var script = document.createElement('script');
-                  script.type = 'text/javascript';
-                  script.src = '//geographicalpaperworkmovie.com/b2793c0e8f1efb396cc1e0a852b97f29/invoke.js';
-                  document.head.appendChild(script);
-                })();
-              `
-            }} />
-          </div>
+          <div id="banner-320x50" style={{ textAlign: 'center', marginBottom: '20px' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Premium Download Experience</h2>
@@ -654,25 +737,7 @@ const RedirectPage = () => {
           </div>
 
           {/* Banner 468x60 */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <script type="text/javascript" dangerouslySetInnerHTML={{
-              __html: `
-                atOptions = {
-                  'key' : '61d8c3168f7e4d6ac628e8b4373161ed',
-                  'format' : 'iframe',
-                  'height' : 60,
-                  'width' : 468,
-                  'params' : {}
-                };
-                (function() {
-                  var script = document.createElement('script');
-                  script.type = 'text/javascript';
-                  script.src = '//geographicalpaperworkmovie.com/61d8c3168f7e4d6ac628e8b4373161ed/invoke.js';
-                  document.head.appendChild(script);
-                })();
-              `
-            }} />
-          </div>
+          <div id="banner-468x60" style={{ textAlign: 'center', marginBottom: '20px' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ No Sign-Up Required</h2>
@@ -680,25 +745,7 @@ const RedirectPage = () => {
           </div>
 
           {/* Banner 728x90 */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <script type="text/javascript" dangerouslySetInnerHTML={{
-              __html: `
-                atOptions = {
-                  'key' : 'aa93afc5b7ec740bcfeb71a8ba4e7df6',
-                  'format' : 'iframe',
-                  'height' : 90,
-                  'width' : 728,
-                  'params' : {}
-                };
-                (function() {
-                  var script = document.createElement('script');
-                  script.type = 'text/javascript';
-                  script.src = '//geographicalpaperworkmovie.com/aa93afc5b7ec740bcfeb71a8ba4e7df6/invoke.js';
-                  document.head.appendChild(script);
-                })();
-              `
-            }} />
-          </div>
+          <div id="banner-728x90" style={{ textAlign: 'center', marginBottom: '20px' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Smart Movie Suggestions</h2>
@@ -706,25 +753,7 @@ const RedirectPage = () => {
           </div>
 
           {/* Banner 300x250 */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <script type="text/javascript" dangerouslySetInnerHTML={{
-              __html: `
-                atOptions = {
-                  'key' : '7ba5369fa5813ef798b6e4e47c890586',
-                  'format' : 'iframe',
-                  'height' : 250,
-                  'width' : 300,
-                  'params' : {}
-                };
-                (function() {
-                  var script = document.createElement('script');
-                  script.type = 'text/javascript';
-                  script.src = '//geographicalpaperworkmovie.com/7ba5369fa5813ef798b6e4e47c890586/invoke.js';
-                  document.head.appendChild(script);
-                })();
-              `
-            }} />
-          </div>
+          <div id="banner-300x250" style={{ textAlign: 'center', marginBottom: '20px' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Reward Video System</h2>
@@ -732,25 +761,7 @@ const RedirectPage = () => {
           </div>
 
           {/* Banner 160x300 */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <script type="text/javascript" dangerouslySetInnerHTML={{
-              __html: `
-                atOptions = {
-                  'key' : '78c4cdacf26e025218f6b1ea37a1c1a9',
-                  'format' : 'iframe',
-                  'height' : 300,
-                  'width' : 160,
-                  'params' : {}
-                };
-                (function() {
-                  var script = document.createElement('script');
-                  script.type = 'text/javascript';
-                  script.src = '//geographicalpaperworkmovie.com/78c4cdacf26e025218f6b1ea37a1c1a9/invoke.js';
-                  document.head.appendChild(script);
-                })();
-              `
-            }} />
-          </div>
+          <div id="banner-160x300" style={{ textAlign: 'center', marginBottom: '20px' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Mobile-Optimized Interface</h2>
@@ -758,25 +769,7 @@ const RedirectPage = () => {
           </div>
 
           {/* Banner 160x600 - Largest Height */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <script type="text/javascript" dangerouslySetInnerHTML={{
-              __html: `
-                atOptions = {
-                  'key' : '9305aa746e0c0a43feb5c8517442be9d',
-                  'format' : 'iframe',
-                  'height' : 600,
-                  'width' : 160,
-                  'params' : {}
-                };
-                (function() {
-                  var script = document.createElement('script');
-                  script.type = 'text/javascript';
-                  script.src = '//geographicalpaperworkmovie.com/9305aa746e0c0a43feb5c8517442be9d/invoke.js';
-                  document.head.appendChild(script);
-                })();
-              `
-            }} />
-          </div>
+          <div id="banner-160x600" style={{ textAlign: 'center', marginBottom: '20px' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Regular Movie Updates</h2>
