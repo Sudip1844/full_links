@@ -67,9 +67,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin configuration endpoint - get from Supabase ONLY
   app.get("/api/admin-config", async (req, res) => {
     try {
-      console.log('Fetching admin config from API endpoint...');
       const adminSettings = await storage.getAdminSettings();
-      console.log('Admin settings response:', adminSettings);
       
       if (!adminSettings) {
         console.log('No admin settings found');

@@ -7,7 +7,7 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log('Starting MovieZone development server...');
+console.log('Server running');
 
 // Start the server using tsx from node_modules
 const serverProcess = spawn('npx', ['tsx', 'index.ts'], {
@@ -18,18 +18,16 @@ const serverProcess = spawn('npx', ['tsx', 'index.ts'], {
 });
 
 serverProcess.on('error', (error) => {
-  console.error('Failed to start server:', error);
+  console.error('Server error:', error);
   process.exit(1);
 });
 
 serverProcess.on('close', (code) => {
-  console.log(`Server process exited with code ${code}`);
   process.exit(code || 0);
 });
 
 // Handle process termination
 process.on('SIGINT', () => {
-  console.log('\nShutting down...');
   serverProcess.kill('SIGINT');
 });
 
