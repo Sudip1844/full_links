@@ -681,23 +681,29 @@ export class DatabaseStorage implements IStorage {
       this.supabaseClient = supabase;
     }
     
-    const now = new Date();
-    // Delete expired sessions using raw SQL query through supabase client
     try {
-      // Get all expired sessions first
-      const expiredSessions = await this.supabaseClient.select('ad_view_sessions', 'id', {});
+      const now = new Date();
+      console.log(`Cleaning up expired ad view sessions before: ${now.toISOString()}`);
       
-      if (expiredSessions && expiredSessions.length > 0) {
-        // Filter expired sessions on the client side since we can't do date comparison directly in REST API
-        for (const session of expiredSessions) {
-          const fullSession = await this.supabaseClient.select('ad_view_sessions', '*', { id: session.id });
-          if (fullSession && fullSession[0]) {
-            const expiresAt = new Date(fullSession[0].expires_at);
-            if (now > expiresAt) {
-              await this.supabaseClient.delete('ad_view_sessions', { id: session.id });
-            }
+      // Get all sessions to check expiry
+      const allSessions = await this.supabaseClient.select('ad_view_sessions', '*', {});
+      
+      if (allSessions && allSessions.length > 0) {
+        console.log(`Found ${allSessions.length} total sessions to check`);
+        let deletedCount = 0;
+        
+        for (const session of allSessions) {
+          const expiresAt = new Date(session.expires_at);
+          if (now > expiresAt) {
+            console.log(`Deleting expired session: IP ${session.ip_address}, shortId ${session.short_id}, expired at ${expiresAt.toISOString()}`);
+            await this.supabaseClient.delete('ad_view_sessions', { id: session.id });
+            deletedCount++;
           }
         }
+        
+        console.log(`Cleanup completed: deleted ${deletedCount} expired sessions`);
+      } else {
+        console.log('No sessions found for cleanup');
       }
     } catch (error) {
       console.error('Error cleaning up expired sessions:', error);
