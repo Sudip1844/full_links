@@ -892,11 +892,8 @@ const RedirectPage = () => {
                     Click here to get your movie
                     <span style={{ fontSize: '1.2em', marginLeft: '8px' }}>👇</span>
                   </p>
-                  <a 
-                    href="https://geographicalpaperworkmovie.com/tjuyzmpz59?key=d9970f2f8af7c58ee2052b35a9338eb3"
-                    target="_blank"
-                    rel="noopener"
-                    onClick={() => setTimeout(() => handleContinue(movieData.originalLink), 1000)}
+                  <button 
+                    onClick={() => handleContinue(movieData.originalLink)}
                     style={{
                       background: 'linear-gradient(45deg, #007bff, #0056b3)',
                       color: 'white',
@@ -907,13 +904,11 @@ const RedirectPage = () => {
                       borderRadius: '30px',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                      textDecoration: 'none',
-                      display: 'inline-block'
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
                     }}
                   >
                     Continue
-                  </a>
+                  </button>
                 </>
               )}
             </div>
