@@ -170,71 +170,7 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
-  // Load ads scripts when component mounts and ads are enabled
-  useEffect(() => {
-    if (!movieData?.adsEnabled || movieData?.skipTimer || countdown > 0) return;
-
-    // Load all ad scripts properly to body
-    const loadScript = (id: string, src: string, onload?: () => void) => {
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.src = src;
-      if (onload) script.onload = onload;
-      document.body.appendChild(script);
-    };
-
-    const setupBannerAd = (containerId: string, key: string, width: number, height: number) => {
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.innerHTML = `
-        (function() {
-          var container = document.getElementById('${containerId}');
-          if (container) {
-            window.atOptions = {
-              'key': '${key}',
-              'format': 'iframe',
-              'height': ${height},
-              'width': ${width},
-              'params': {}
-            };
-            var s = document.createElement('script');
-            s.type = 'text/javascript';
-            s.src = '//geographicalpaperworkmovie.com/${key}/invoke.js';
-            container.appendChild(s);
-          }
-        })();
-      `;
-      document.body.appendChild(script);
-    };
-
-    // Load Social Bar Ads (body end)
-    loadScript('social-bar', '//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js');
-
-    // Load Native Banner Ads (content middle)
-    loadScript('native-banner', '//geographicalpaperworkmovie.com/6b5d17fdf8cec3df50a638f17686be2/invoke.js');
-
-    // Setup Banner Ads in containers
-    setupBannerAd('banner-320x50', 'b2793c0e8f1efb396cc1e0a852b97f29', 320, 50);
-    setupBannerAd('banner-468x60', '61d8c3168f7e4d6ac628e8b4373161ed', 468, 60);
-    setupBannerAd('banner-728x90', 'aa93afc5b7ec740bcfeb71a8ba4e7df6', 728, 90);
-    setupBannerAd('banner-300x250', '7ba5369fa5813ef798b6e4e47c890586', 300, 250);
-    setupBannerAd('banner-160x300', '78c4cdacf26e025218f6b1ea37a1c1a9', 160, 300);
-    setupBannerAd('banner-160x600', '9305aa746e0c0a43feb5c8517442be9d', 160, 600);
-
-    // Load Popunder Ads (body end)
-    const popunderScript = document.createElement('script');
-    popunderScript.type = 'text/javascript';
-    popunderScript.innerHTML = `
-      (function() {
-        var script = document.createElement('script');
-        script.src = '//geographicalpaperworkmovie.com/tjuyzmpz59?key=d9970f2f8af7c58ee2052b35a9338eb3';
-        script.type = 'text/javascript';
-        document.body.appendChild(script);
-      })();
-    `;
-    document.body.appendChild(popunderScript);
-
-  }, [movieData?.adsEnabled, movieData?.skipTimer, countdown]);
+  // Removed all ad loading scripts - keeping only Smart Link functionality
 
   const handleContinue = (link: string) => {
     window.location.href = link;
@@ -644,15 +580,13 @@ const RedirectPage = () => {
       <div style={{ minHeight: '100vh', background: '#f8f9fa' }}>
         <header style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', padding: '30px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: '1.8em', marginBottom: '10px', textShadow: '0 2px 4px rgba(0,0,0,0.3)', margin: '0 0 10px 0' }}>
-            🎬 <a href="https://geographicalpaperworkmovie.com/tjuyzmpz59?key=d9970f2f8af7c58ee2052b35a9338eb3" target="_blank" style={{ color: 'white', textDecoration: 'none' }}>MovieZone</a> — Your One-Stop Movie Destination
+            🎬 <a href="https://geographicalpaperworkmovie.com/tjuyzmpz59?key=d9970f2f8af7c58ee2052b35a9338eb3" target="_blank" style={{ color: 'white', textDecoration: 'none' }}>MovieZone Your One Stop Movie Destination</a>
           </h1>
           <p style={{ fontSize: '1em', opacity: '0.9', margin: '10px 0 0 0' }}>Welcome to your favorite movie world</p>
         </header>
 
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
 
-          {/* Social Bar Ads - Position 1 */}
-          <div id="social-bar-ads" style={{ textAlign: 'center', marginBottom: '20px', minHeight: '50px' }}></div>
 
           {/* Content Sections */}
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
@@ -660,56 +594,42 @@ const RedirectPage = () => {
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Bollywood, Hollywood, South Indian, Web Series, Bengali, Animation, Comedy, Action, Romance, Horror, Thriller, Sci-Fi, K-Drama, and 18+ content.</p>
           </div>
 
-          {/* Native Banner Ads - Position 2 */}
-          <div id="container-6b5d17fdf8cec3df50a638f17686be2" style={{ textAlign: 'center', marginBottom: '20px', minHeight: '100px' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Multi-Language Movie Support</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Bengali, Hindi, English, Tamil, Telugu, Gujarati — something for everyone!</p>
           </div>
 
-          {/* Banner 320x50 - Smallest Height */}
-          <div id="banner-320x50" style={{ textAlign: 'center', marginBottom: '20px', minHeight: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Premium Download Experience</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Descriptions, screenshots, cast information, and high-speed download links.</p>
           </div>
 
-          {/* Banner 468x60 */}
-          <div id="banner-468x60" style={{ textAlign: 'center', marginBottom: '20px', minHeight: '60px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ No Sign-Up Required</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Open, browse, and download instantly.</p>
           </div>
 
-          {/* Banner 728x90 */}
-          <div id="banner-728x90" style={{ textAlign: 'center', marginBottom: '20px', minHeight: '90px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Smart Movie Suggestions</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Intelligent recommendations based on your interests.</p>
           </div>
 
-          {/* Banner 300x250 */}
-          <div id="banner-300x250" style={{ textAlign: 'center', marginBottom: '20px', minHeight: '250px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Reward Video System</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Unlock movies after a quick 10 second ad view.</p>
           </div>
 
-          {/* Banner 160x300 */}
-          <div id="banner-160x300" style={{ textAlign: 'center', marginBottom: '20px', minHeight: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Mobile-Optimized Interface</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Fast, clean experience even on slow internet.</p>
           </div>
 
-          {/* Banner 160x600 - Largest Height */}
-          <div id="banner-160x600" style={{ textAlign: 'center', marginBottom: '20px', minHeight: '600px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Regular Movie Updates</h2>
@@ -915,33 +835,11 @@ const RedirectPage = () => {
           )}
         </div>
 
-        {/* Additional Social Bar Ads before footer */}
-        <div style={{ textAlign: 'center', padding: '20px', background: '#f8f9fa' }}>
-          <div id="social-bar-footer" style={{ minHeight: '50px' }}></div>
-        </div>
 
         <footer style={{ background: '#343a40', color: 'white', textAlign: 'center', padding: '30px 20px', marginTop: '50px' }}>
           <p style={{ margin: '0' }}>© 2025 Movie Zone | Enjoy your favorite movies</p>
         </footer>
 
-        {/* Popunder Ads - Body end placement */}
-        <script type="text/javascript">
-          {`
-            (function() {
-              var clickCount = 0;
-              document.addEventListener('click', function() {
-                clickCount++;
-                if (clickCount === 1) {
-                  var win = window.open('https://geographicalpaperworkmovie.com/tjuyzmpz59?key=d9970f2f8af7c58ee2052b35a9338eb3', '_blank');
-                  if (win) {
-                    win.blur();
-                    window.focus();
-                  }
-                }
-              });
-            })();
-          `}
-        </script>
       </div>
 
       <style>{`
