@@ -1196,9 +1196,9 @@ const AdminPanel = () => {
       <div className="max-w-6xl mx-auto p-4">
         <Tabs defaultValue="home" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="home">Home</TabsTrigger>
-            <TabsTrigger value="database">Database</TabsTrigger>
-            <TabsTrigger value="tokens">API Tokens</TabsTrigger>
+            <TabsTrigger value="home" className="data-[state=active]:bg-green-100 data-[state=active]:text-green-800 hover:bg-green-50 data-[state=active]:border-green-300">Home</TabsTrigger>
+            <TabsTrigger value="database" className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-800 hover:bg-blue-50 data-[state=active]:border-blue-300">Database</TabsTrigger>
+            <TabsTrigger value="tokens" className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-800 hover:bg-purple-50 data-[state=active]:border-purple-300">API Tokens</TabsTrigger>
           </TabsList>
 
           <TabsContent value="home" className="space-y-6">
@@ -1235,10 +1235,10 @@ const AdminPanel = () => {
               <CardContent className="p-6">
                 <Tabs defaultValue="single" className="w-full">
                   <TabsList className="grid w-full grid-cols-4 mb-6">
-                    <TabsTrigger value="single">Single</TabsTrigger>
-                    <TabsTrigger value="quality">Quality</TabsTrigger>
-                    <TabsTrigger value="episodes">Ep Quality</TabsTrigger>
-                    <TabsTrigger value="zip">Ep Zip</TabsTrigger>
+                    <TabsTrigger value="single" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800 hover:bg-orange-50 data-[state=active]:border-orange-300">Single</TabsTrigger>
+                    <TabsTrigger value="quality" className="data-[state=active]:bg-red-100 data-[state=active]:text-red-800 hover:bg-red-50 data-[state=active]:border-red-300">Quality</TabsTrigger>
+                    <TabsTrigger value="episodes" className="data-[state=active]:bg-teal-100 data-[state=active]:text-teal-800 hover:bg-teal-50 data-[state=active]:border-teal-300">Ep Quality</TabsTrigger>
+                    <TabsTrigger value="zip" className="data-[state=active]:bg-pink-100 data-[state=active]:text-pink-800 hover:bg-pink-50 data-[state=active]:border-pink-300">Ep Zip</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="single" className="space-y-4">
@@ -1653,10 +1653,10 @@ const AdminPanel = () => {
               <CardContent className="p-6">
                 <Tabs defaultValue="single-links" className="w-full">
                   <TabsList className="grid w-full grid-cols-4 mb-6">
-                    <TabsTrigger value="single-links">Single</TabsTrigger>
-                    <TabsTrigger value="quality-links">Quality</TabsTrigger>
-                    <TabsTrigger value="episode-links">Ep Quality</TabsTrigger>
-                    <TabsTrigger value="zip-links">Ep Zip</TabsTrigger>
+                    <TabsTrigger value="single-links" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800 hover:bg-orange-50 data-[state=active]:border-orange-300">Single</TabsTrigger>
+                    <TabsTrigger value="quality-links" className="data-[state=active]:bg-red-100 data-[state=active]:text-red-800 hover:bg-red-50 data-[state=active]:border-red-300">Quality</TabsTrigger>
+                    <TabsTrigger value="episode-links" className="data-[state=active]:bg-teal-100 data-[state=active]:text-teal-800 hover:bg-teal-50 data-[state=active]:border-teal-300">Ep Quality</TabsTrigger>
+                    <TabsTrigger value="zip-links" className="data-[state=active]:bg-pink-100 data-[state=active]:text-pink-800 hover:bg-pink-50 data-[state=active]:border-pink-300">Ep Zip</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="single-links">
