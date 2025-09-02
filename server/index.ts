@@ -21,6 +21,8 @@ app.use(cors({
     'https://mkvmoviepoint.netlify.app',
     'http://localhost:5173', // For local development
     'http://localhost:5000', // For local development
+    /^https:\/\/.*\.replit\.app$/, // Allow all Replit app domains
+    /^https:\/\/.*\.replit\.dev$/, // Allow all Replit dev domains
     process.env.CLIENT_URL || '*'
   ],
   credentials: true,
