@@ -6,10 +6,10 @@ import * as schema from "./shared/schema.js";
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-// Use Replit's PostgreSQL database
-const connectionString = process.env.DATABASE_URL;
+// Use Supabase connection from .env file (not Replit's PostgreSQL)
+const connectionString = process.env.DATABASE_URL || "postgresql://postgres:Sudipb184495@db.ztorzqnvzxbptmdmaqyi.supabase.co:5432/postgres";
 
-console.log('Using Replit PostgreSQL database connection');
+console.log('Using Supabase database connection');
 
 if (!connectionString) {
   throw new Error(
