@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import PopunderAd from "@/components/ads/PopunderAd";
+import SocialBarAd from "@/components/ads/SocialBarAd";
 
 const RedirectPage = () => {
   const [location] = useLocation();
@@ -170,21 +172,6 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
-  // Load ad scripts immediately when page loads - no connection to timer or countdown
-  useEffect(() => {
-    // Load popunder ad script as soon as page loads
-    const popunderScript = document.createElement('script');
-    popunderScript.type = 'text/javascript';
-    popunderScript.src = '//geographicalpaperworkmovie.com/8c/df/3c/8cdf3cac4d9a70c349676c7d629e53ec.js';
-    document.head.appendChild(popunderScript);
-
-    // Load social bar ad script as soon as page loads (goes in body)
-    const socialBarScript = document.createElement('script');
-    socialBarScript.type = 'text/javascript';
-    socialBarScript.src = '//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js';
-    document.body.appendChild(socialBarScript);
-
-  }, []); // Empty dependency array means it runs once when component mounts
 
   const handleContinue = (link: string) => {
     window.location.href = link;
@@ -429,6 +416,11 @@ const RedirectPage = () => {
       <style>{`
         /* Smooth transitions for timer circle */
       `}</style>
+      
+      {/* Banner ads load automatically when component renders */}
+      <PopunderAd />
+      <SocialBarAd />
+      
       <div style={{ 
         minHeight: '100vh', 
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
