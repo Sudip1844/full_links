@@ -13,8 +13,6 @@ const RedirectPage = () => {
   const viewsUpdated = useRef(false); // Prevent multiple view updates
   const adViewRecorded = useRef(false); // Prevent multiple ad view recordings
 
-  // Simple ad loading - no refs needed
-
   // Update views mutations for both link types
   const updateSingleViewsMutation = useMutation({
     mutationFn: async (shortId: string) => {
@@ -608,42 +606,36 @@ const RedirectPage = () => {
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Wide Range of Movie Categories</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Bollywood, Hollywood, South Indian, Web Series, Bengali, Animation, Comedy, Action, Romance, Horror, Thriller, Sci-Fi, K-Drama, and 18+ content.</p>
-            <div id="banner320x50" style={{ textAlign: 'center', marginTop: '15px', minHeight: '50px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Multi-Language Movie Support</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Bengali, Hindi, English, Tamil, Telugu, Gujarati — something for everyone!</p>
-            <div id="banner468x60" style={{ textAlign: 'center', marginTop: '15px', minHeight: '60px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Premium Download Experience</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Descriptions, screenshots, cast information, and high-speed download links.</p>
-            <div id="banner300x250" style={{ textAlign: 'center', marginTop: '15px', minHeight: '250px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ No Sign-Up Required</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Open, browse, and download instantly.</p>
-            <div id="banner160x300" style={{ textAlign: 'center', marginTop: '15px', minHeight: '300px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Smart Movie Suggestions</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Intelligent recommendations based on your interests.</p>
-            <div id="banner728x90" style={{ textAlign: 'center', marginTop: '15px', minHeight: '90px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Reward Video System</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Unlock movies after a quick 10 second ad view.</p>
-            <div id="banner160x600" style={{ textAlign: 'center', marginTop: '15px', minHeight: '600px' }}></div>
           </div>
 
 
@@ -669,7 +661,6 @@ const RedirectPage = () => {
             <p style={{ color: 'rgba(255,255,255,0.9)', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>
               👉 <a href="https://t.me/moviezone969" target="_blank" style={{ color: '#fff', textDecoration: 'none', fontWeight: 'bold', background: 'rgba(255,255,255,0.2)', padding: '6px 12px', borderRadius: '15px', display: 'inline-block', marginTop: '8px', fontSize: '0.9em' }}>t.me/moviezone969</a> — for instant updates.
             </p>
-            <div id="nativeBanner" style={{ textAlign: 'center', marginTop: '15px', minHeight: '100px' }}></div>
           </div>
 
           {/* Continue Button Section (Hidden initially) */}
