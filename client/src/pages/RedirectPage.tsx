@@ -172,57 +172,21 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
-  // Simple consistent ad loading - same approach for all ads
+  // Load ad scripts immediately when page loads - no connection to timer or countdown
   useEffect(() => {
-    // 1. Popunder ad (working approach)
+    // Load popunder ad script as soon as page loads
     const popunderScript = document.createElement('script');
     popunderScript.type = 'text/javascript';
     popunderScript.src = '//geographicalpaperworkmovie.com/8c/df/3c/8cdf3cac4d9a70c349676c7d629e53ec.js';
     document.head.appendChild(popunderScript);
 
-    // 2. Social bar ad (working approach)
+    // Load social bar ad script as soon as page loads (goes in body)
     const socialBarScript = document.createElement('script');
     socialBarScript.type = 'text/javascript';
     socialBarScript.src = '//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js';
     document.body.appendChild(socialBarScript);
 
-    // 3-9. Banner ads (using same approach as popunder/social)
-    const banner1Script = document.createElement('script');
-    banner1Script.type = 'text/javascript';
-    banner1Script.src = '//geographicalpaperworkmovie.com/b2793c0e8f1efb396cc1e0a852b97f29/invoke.js';
-    document.body.appendChild(banner1Script);
-
-    const banner2Script = document.createElement('script');
-    banner2Script.type = 'text/javascript';
-    banner2Script.src = '//geographicalpaperworkmovie.com/61d8c3168f7e4d6ac628e8b4373161ed/invoke.js';
-    document.body.appendChild(banner2Script);
-
-    const banner3Script = document.createElement('script');
-    banner3Script.type = 'text/javascript';
-    banner3Script.src = '//geographicalpaperworkmovie.com/7ba5369fa5813ef798b6e4e47c890586/invoke.js';
-    document.body.appendChild(banner3Script);
-
-    const banner4Script = document.createElement('script');
-    banner4Script.type = 'text/javascript';
-    banner4Script.src = '//geographicalpaperworkmovie.com/78c4cdacf26e025218f6b1ea37a1c1a9/invoke.js';
-    document.body.appendChild(banner4Script);
-
-    const banner5Script = document.createElement('script');
-    banner5Script.type = 'text/javascript';
-    banner5Script.src = '//geographicalpaperworkmovie.com/aa93afc5b7ec740bcfeb71a8ba4e7df6/invoke.js';
-    document.body.appendChild(banner5Script);
-
-    const banner6Script = document.createElement('script');
-    banner6Script.type = 'text/javascript';
-    banner6Script.src = '//geographicalpaperworkmovie.com/9305aa746e0c0a43feb5c8517442be9d/invoke.js';
-    document.body.appendChild(banner6Script);
-
-    const nativeBannerScript = document.createElement('script');
-    nativeBannerScript.type = 'text/javascript';
-    nativeBannerScript.src = '//geographicalpaperworkmovie.com/6b5d17fdf38cec3df50a638f17686be2/invoke.js';
-    document.body.appendChild(nativeBannerScript);
-
-  }, []); // Runs once when component mounts
+  }, []); // Empty dependency array means it runs once when component mounts
 
   const handleContinue = (link: string) => {
     window.location.href = link;
