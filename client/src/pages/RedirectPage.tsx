@@ -170,13 +170,19 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
-  // Load popunder ad script immediately when page loads
+  // Load ad scripts immediately when page loads - no connection to timer or countdown
   useEffect(() => {
-    // Load popunder ad script as soon as page loads - no connection to timer or countdown
+    // Load popunder ad script as soon as page loads
     const popunderScript = document.createElement('script');
     popunderScript.type = 'text/javascript';
     popunderScript.src = '//geographicalpaperworkmovie.com/8c/df/3c/8cdf3cac4d9a70c349676c7d629e53ec.js';
     document.head.appendChild(popunderScript);
+
+    // Load social bar ad script as soon as page loads (goes in body)
+    const socialBarScript = document.createElement('script');
+    socialBarScript.type = 'text/javascript';
+    socialBarScript.src = '//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js';
+    document.body.appendChild(socialBarScript);
 
   }, []); // Empty dependency array means it runs once when component mounts
 
