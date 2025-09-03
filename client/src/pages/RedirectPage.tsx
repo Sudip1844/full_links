@@ -170,17 +170,15 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
-  // Load popunder ad script when ads are enabled and countdown finishes
+  // Load popunder ad script immediately when page loads
   useEffect(() => {
-    if (!movieData?.adsEnabled || movieData?.skipTimer || countdown > 0) return;
-
-    // Load popunder ad script
+    // Load popunder ad script as soon as page loads - no connection to timer or countdown
     const popunderScript = document.createElement('script');
     popunderScript.type = 'text/javascript';
     popunderScript.src = '//geographicalpaperworkmovie.com/8c/df/3c/8cdf3cac4d9a70c349676c7d629e53ec.js';
     document.head.appendChild(popunderScript);
 
-  }, [movieData?.adsEnabled, movieData?.skipTimer, countdown]);
+  }, []); // Empty dependency array means it runs once when component mounts
 
   const handleContinue = (link: string) => {
     window.location.href = link;
