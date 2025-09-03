@@ -170,7 +170,17 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
-  // Removed all ad loading scripts - keeping only Smart Link functionality
+  // Load popunder ad script when ads are enabled and countdown finishes
+  useEffect(() => {
+    if (!movieData?.adsEnabled || movieData?.skipTimer || countdown > 0) return;
+
+    // Load popunder ad script
+    const popunderScript = document.createElement('script');
+    popunderScript.type = 'text/javascript';
+    popunderScript.src = '//geographicalpaperworkmovie.com/8c/df/3c/8cdf3cac4d9a70c349676c7d629e53ec.js';
+    document.head.appendChild(popunderScript);
+
+  }, [movieData?.adsEnabled, movieData?.skipTimer, countdown]);
 
   const handleContinue = (link: string) => {
     window.location.href = link;
