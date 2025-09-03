@@ -13,14 +13,7 @@ const RedirectPage = () => {
   const viewsUpdated = useRef(false); // Prevent multiple view updates
   const adViewRecorded = useRef(false); // Prevent multiple ad view recordings
 
-  // Ad container refs for fast loading
-  const banner320x50Ref = useRef<HTMLDivElement>(null);
-  const banner468x60Ref = useRef<HTMLDivElement>(null);
-  const banner300x250Ref = useRef<HTMLDivElement>(null);
-  const banner160x300Ref = useRef<HTMLDivElement>(null);
-  const banner728x90Ref = useRef<HTMLDivElement>(null);
-  const banner160x600Ref = useRef<HTMLDivElement>(null);
-  const nativeBannerRef = useRef<HTMLDivElement>(null);
+  // Simple ad loading - no refs needed
 
   // Update views mutations for both link types
   const updateSingleViewsMutation = useMutation({
@@ -179,52 +172,57 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
-  // Fast ad loading system - loads immediately when page loads
+  // Simple consistent ad loading - same approach for all ads
   useEffect(() => {
-    // 1. Load popunder ad script immediately
+    // 1. Popunder ad (working approach)
     const popunderScript = document.createElement('script');
     popunderScript.type = 'text/javascript';
     popunderScript.src = '//geographicalpaperworkmovie.com/8c/df/3c/8cdf3cac4d9a70c349676c7d629e53ec.js';
     document.head.appendChild(popunderScript);
 
-    // 2. Load social bar ad script immediately
+    // 2. Social bar ad (working approach)
     const socialBarScript = document.createElement('script');
     socialBarScript.type = 'text/javascript';
     socialBarScript.src = '//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js';
-    socialBarScript.async = true;
     document.body.appendChild(socialBarScript);
 
-    // 3. Fast banner ad loading function
-    const loadInvoke = (container: HTMLDivElement | null, atOptions: any, src: string) => {
-      if (!container) return;
-      container.innerHTML = "";
-      (window as any).atOptions = atOptions;
-      const s = document.createElement("script");
-      s.type = "text/javascript";
-      s.src = src;
-      s.async = true;
-      container.appendChild(s);
-    };
+    // 3-9. Banner ads (using same approach as popunder/social)
+    const banner1Script = document.createElement('script');
+    banner1Script.type = 'text/javascript';
+    banner1Script.src = '//geographicalpaperworkmovie.com/b2793c0e8f1efb396cc1e0a852b97f29/invoke.js';
+    document.body.appendChild(banner1Script);
 
-    // 4. Load all banner ads immediately and parallel
-    loadInvoke(banner320x50Ref.current, { key: "b2793c0e8f1efb396cc1e0a852b97f29", format: "iframe", height: 50, width: 320, params: {} }, "//geographicalpaperworkmovie.com/b2793c0e8f1efb396cc1e0a852b97f29/invoke.js");
-    loadInvoke(banner468x60Ref.current, { key: "61d8c3168f7e4d6ac628e8b4373161ed", format: "iframe", height: 60, width: 468, params: {} }, "//geographicalpaperworkmovie.com/61d8c3168f7e4d6ac628e8b4373161ed/invoke.js");
-    loadInvoke(banner300x250Ref.current, { key: "7ba5369fa5813ef798b6e4e47c890586", format: "iframe", height: 250, width: 300, params: {} }, "//geographicalpaperworkmovie.com/7ba5369fa5813ef798b6e4e47c890586/invoke.js");
-    loadInvoke(banner160x300Ref.current, { key: "78c4cdacf26e025218f6b1ea37a1c1a9", format: "iframe", height: 300, width: 160, params: {} }, "//geographicalpaperworkmovie.com/78c4cdacf26e025218f6b1ea37a1c1a9/invoke.js");
-    loadInvoke(banner728x90Ref.current, { key: "aa93afc5b7ec740bcfeb71a8ba4e7df6", format: "iframe", height: 90, width: 728, params: {} }, "//geographicalpaperworkmovie.com/aa93afc5b7ec740bcfeb71a8ba4e7df6/invoke.js");
-    loadInvoke(banner160x600Ref.current, { key: "9305aa746e0c0a43feb5c8517442be9d", format: "iframe", height: 600, width: 160, params: {} }, "//geographicalpaperworkmovie.com/9305aa746e0c0a43feb5c8517442be9d/invoke.js");
+    const banner2Script = document.createElement('script');
+    banner2Script.type = 'text/javascript';
+    banner2Script.src = '//geographicalpaperworkmovie.com/61d8c3168f7e4d6ac628e8b4373161ed/invoke.js';
+    document.body.appendChild(banner2Script);
 
-    // 5. Load native banner ad immediately
-    if (nativeBannerRef.current) {
-      nativeBannerRef.current.innerHTML = '<div id="container-6b5d17fdf38cec3df50a638f17686be2"></div>';
-      const ns = document.createElement("script");
-      ns.setAttribute("async", "async");
-      ns.setAttribute("data-cfasync", "false");
-      ns.src = "//geographicalpaperworkmovie.com/6b5d17fdf38cec3df50a638f17686be2/invoke.js";
-      nativeBannerRef.current.appendChild(ns);
-    }
+    const banner3Script = document.createElement('script');
+    banner3Script.type = 'text/javascript';
+    banner3Script.src = '//geographicalpaperworkmovie.com/7ba5369fa5813ef798b6e4e47c890586/invoke.js';
+    document.body.appendChild(banner3Script);
 
-  }, []); // Runs once when component mounts - fastest loading
+    const banner4Script = document.createElement('script');
+    banner4Script.type = 'text/javascript';
+    banner4Script.src = '//geographicalpaperworkmovie.com/78c4cdacf26e025218f6b1ea37a1c1a9/invoke.js';
+    document.body.appendChild(banner4Script);
+
+    const banner5Script = document.createElement('script');
+    banner5Script.type = 'text/javascript';
+    banner5Script.src = '//geographicalpaperworkmovie.com/aa93afc5b7ec740bcfeb71a8ba4e7df6/invoke.js';
+    document.body.appendChild(banner5Script);
+
+    const banner6Script = document.createElement('script');
+    banner6Script.type = 'text/javascript';
+    banner6Script.src = '//geographicalpaperworkmovie.com/9305aa746e0c0a43feb5c8517442be9d/invoke.js';
+    document.body.appendChild(banner6Script);
+
+    const nativeBannerScript = document.createElement('script');
+    nativeBannerScript.type = 'text/javascript';
+    nativeBannerScript.src = '//geographicalpaperworkmovie.com/6b5d17fdf38cec3df50a638f17686be2/invoke.js';
+    document.body.appendChild(nativeBannerScript);
+
+  }, []); // Runs once when component mounts
 
   const handleContinue = (link: string) => {
     window.location.href = link;
@@ -646,42 +644,42 @@ const RedirectPage = () => {
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Wide Range of Movie Categories</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Bollywood, Hollywood, South Indian, Web Series, Bengali, Animation, Comedy, Action, Romance, Horror, Thriller, Sci-Fi, K-Drama, and 18+ content.</p>
-            <div ref={banner320x50Ref} style={{ textAlign: 'center', marginTop: '15px', minHeight: '50px' }}></div>
+            <div id="banner320x50" style={{ textAlign: 'center', marginTop: '15px', minHeight: '50px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Multi-Language Movie Support</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Bengali, Hindi, English, Tamil, Telugu, Gujarati — something for everyone!</p>
-            <div ref={banner468x60Ref} style={{ textAlign: 'center', marginTop: '15px', minHeight: '60px' }}></div>
+            <div id="banner468x60" style={{ textAlign: 'center', marginTop: '15px', minHeight: '60px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Premium Download Experience</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Descriptions, screenshots, cast information, and high-speed download links.</p>
-            <div ref={banner300x250Ref} style={{ textAlign: 'center', marginTop: '15px', minHeight: '250px' }}></div>
+            <div id="banner300x250" style={{ textAlign: 'center', marginTop: '15px', minHeight: '250px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ No Sign-Up Required</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Open, browse, and download instantly.</p>
-            <div ref={banner160x300Ref} style={{ textAlign: 'center', marginTop: '15px', minHeight: '300px' }}></div>
+            <div id="banner160x300" style={{ textAlign: 'center', marginTop: '15px', minHeight: '300px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Smart Movie Suggestions</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Intelligent recommendations based on your interests.</p>
-            <div ref={banner728x90Ref} style={{ textAlign: 'center', marginTop: '15px', minHeight: '90px' }}></div>
+            <div id="banner728x90" style={{ textAlign: 'center', marginTop: '15px', minHeight: '90px' }}></div>
           </div>
 
 
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Reward Video System</h2>
             <p style={{ color: '#666', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>Unlock movies after a quick 10 second ad view.</p>
-            <div ref={banner160x600Ref} style={{ textAlign: 'center', marginTop: '15px', minHeight: '600px' }}></div>
+            <div id="banner160x600" style={{ textAlign: 'center', marginTop: '15px', minHeight: '600px' }}></div>
           </div>
 
 
@@ -707,7 +705,7 @@ const RedirectPage = () => {
             <p style={{ color: 'rgba(255,255,255,0.9)', lineHeight: '1.5', fontSize: '0.9em', margin: '0' }}>
               👉 <a href="https://t.me/moviezone969" target="_blank" style={{ color: '#fff', textDecoration: 'none', fontWeight: 'bold', background: 'rgba(255,255,255,0.2)', padding: '6px 12px', borderRadius: '15px', display: 'inline-block', marginTop: '8px', fontSize: '0.9em' }}>t.me/moviezone969</a> — for instant updates.
             </p>
-            <div ref={nativeBannerRef} style={{ textAlign: 'center', marginTop: '15px', minHeight: '100px' }}></div>
+            <div id="nativeBanner" style={{ textAlign: 'center', marginTop: '15px', minHeight: '100px' }}></div>
           </div>
 
           {/* Continue Button Section (Hidden initially) */}
