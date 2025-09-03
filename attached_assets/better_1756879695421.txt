@@ -1,0 +1,146 @@
+import { useState, useEffect, useRef } from "react";
+import { useLocation } from "wouter";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+
+const RedirectPage = () => {
+  const [location] = useLocation();
+  const [countdown, setCountdown] = useState(10);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [showContinueSection, setShowContinueSection] = useState(false);
+  const [movieData, setMovieData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const viewsUpdated = useRef(false);
+  const adViewRecorded = useRef(false);
+
+  // --- Ad container refs ---
+  const banner320x50Ref = useRef<HTMLDivElement>(null);
+  const banner468x60Ref = useRef<HTMLDivElement>(null);
+  const banner300x250Ref = useRef<HTMLDivElement>(null);
+  const banner160x300Ref = useRef<HTMLDivElement>(null);
+  const banner728x90Ref = useRef<HTMLDivElement>(null);
+  const banner160x600Ref = useRef<HTMLDivElement>(null);
+  const nativeBannerRef = useRef<HTMLDivElement>(null);
+
+  // --- Existing Popunder Script ---
+  useEffect(() => {
+    const popunderScript = document.createElement("script");
+    popunderScript.type = "text/javascript";
+    popunderScript.src = "//geographicalpaperworkmovie.com/8c/df/3c/8cdf3cac4d9a70c349676c7d629e53ec.js";
+    document.head.appendChild(popunderScript);
+  }, []); // Empty dependency array means it runs once when component mounts
+
+  // --- Load Banner ads sequentially ---
+  useEffect(() => {
+    const loadInvoke = (container: HTMLDivElement | null, atOptions: any, src: string) => {
+      if (!container) return;
+      container.innerHTML = "";
+      (window as any).atOptions = atOptions;
+      const s = document.createElement("script");
+      s.type = "text/javascript";
+      s.src = src;
+      s.async = true;
+      container.appendChild(s);
+    };
+
+    loadInvoke(banner320x50Ref.current, { key: "b2793c0e8f1efb396cc1e0a852b97f29", format: "iframe", height: 50, width: 320, params: {} }, "//geographicalpaperworkmovie.com/b2793c0e8f1efb396cc1e0a852b97f29/invoke.js");
+    loadInvoke(banner468x60Ref.current, { key: "61d8c3168f7e4d6ac628e8b4373161ed", format: "iframe", height: 60, width: 468, params: {} }, "//geographicalpaperworkmovie.com/61d8c3168f7e4d6ac628e8b4373161ed/invoke.js");
+    loadInvoke(banner300x250Ref.current, { key: "7ba5369fa5813ef798b6e4e47c890586", format: "iframe", height: 250, width: 300, params: {} }, "//geographicalpaperworkmovie.com/7ba5369fa5813ef798b6e4e47c890586/invoke.js");
+    loadInvoke(banner160x300Ref.current, { key: "78c4cdacf26e025218f6b1ea37a1c1a9", format: "iframe", height: 300, width: 160, params: {} }, "//geographicalpaperworkmovie.com/78c4cdacf26e025218f6b1ea37a1c1a9/invoke.js");
+    loadInvoke(banner728x90Ref.current, { key: "aa93afc5b7ec740bcfeb71a8ba4e7df6", format: "iframe", height: 90, width: 728, params: {} }, "//geographicalpaperworkmovie.com/aa93afc5b7ec740bcfeb71a8ba4e7df6/invoke.js");
+    loadInvoke(banner160x600Ref.current, { key: "9305aa746e0c0a43feb5c8517442be9d", format: "iframe", height: 600, width: 160, params: {} }, "//geographicalpaperworkmovie.com/9305aa746e0c0a43feb5c8517442be9d/invoke.js");
+
+    // Native banner
+    if (nativeBannerRef.current) {
+      nativeBannerRef.current.innerHTML = '<div id="container-6b5d17fdf38cec3df50a638f17686be2"></div>';
+      const ns = document.createElement("script");
+      ns.setAttribute("async", "async");
+      ns.setAttribute("data-cfasync", "false");
+      ns.src = "//geographicalpaperworkmovie.com/6b5d17fdf38cec3df50a638f17686be2/invoke.js";
+      nativeBannerRef.current.appendChild(ns);
+    }
+  }, []);
+
+  // --- Social Bar (floating) ---
+  useEffect(() => {
+    const sb = document.createElement("script");
+    sb.src = "//geographicalpaperworkmovie.com/d1/51/e9/d151e99735d093768a3070dce9f461fd.js";
+    sb.async = true;
+    document.body.appendChild(sb);
+  }, []);
+
+  // --- Rest of your original logic (countdown, API calls, etc.) এখানে আগের মতোই থাকবে ---
+
+  return (
+    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
+      {/* Section 1 */}
+      <div>
+        <h2>✅ Wide Range of Movie Categories</h2>
+        <p>Bollywood, Hollywood, South Indian, Web Series...</p>
+        <div ref={banner320x50Ref}></div>
+      </div>
+
+      {/* Section 2 */}
+      <div>
+        <h2>✅ Multi-Language Movie Support</h2>
+        <p>Bengali, Hindi, English, Tamil, Telugu...</p>
+        <div ref={banner468x60Ref}></div>
+      </div>
+
+      {/* Section 3 */}
+      <div>
+        <h2>✅ Premium Download Experience</h2>
+        <p>Descriptions, screenshots, cast info...</p>
+        <div ref={banner300x250Ref}></div>
+      </div>
+
+      {/* Section 4 */}
+      <div>
+        <h2>✅ No Sign-Up Required</h2>
+        <p>Open, browse, and download instantly.</p>
+        <div ref={banner160x300Ref}></div>
+      </div>
+
+      {/* Section 5 */}
+      <div>
+        <h2>✅ Smart Movie Suggestions</h2>
+        <p>Intelligent recommendations...</p>
+        <div ref={banner728x90Ref}></div>
+      </div>
+
+      {/* Section 6 */}
+      <div>
+        <h2>✅ Reward Video System</h2>
+        <p>Unlock movies after a quick ad view.</p>
+        <div ref={banner160x600Ref}></div>
+      </div>
+
+      {/* Section 7 */}
+      <div>
+        <h2>✅ Mobile-Optimized Interface</h2>
+        <p>Fast, clean experience...</p>
+      </div>
+
+      {/* Section 8 */}
+      <div>
+        <h2>✅ Regular Movie Updates</h2>
+        <p>Fresh content every week.</p>
+      </div>
+
+      {/* Section 9 */}
+      <div>
+        <h2>✅ 100% Safe & Secure</h2>
+        <p>No fake buttons, malware...</p>
+      </div>
+
+      {/* Section 10 (Telegram) */}
+      <div>
+        <h2>✅ Join Our Telegram Channel</h2>
+        <p>👉 <a href="https://t.me/moviezone969" target="_blank">t.me/moviezone969</a></p>
+        <div ref={nativeBannerRef}></div>
+      </div>
+    </div>
+  );
+};
+
+export default RedirectPage;
