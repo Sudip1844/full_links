@@ -3,7 +3,6 @@ import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import PopunderAd from "@/components/ads/PopunderAd";
-import SocialBarAd from "@/components/ads/SocialBarAd";
 
 const RedirectPage = () => {
   const [location] = useLocation();
@@ -419,7 +418,6 @@ const RedirectPage = () => {
       
       {/* Banner ads load automatically when component renders */}
       <PopunderAd />
-      <SocialBarAd />
       
       <div style={{ 
         minHeight: '100vh', 
