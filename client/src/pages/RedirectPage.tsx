@@ -170,13 +170,19 @@ const RedirectPage = () => {
     }
   }, [countdown, movieData?.adsEnabled, movieData?.skipTimer]);
 
+  // Removed all ad loading scripts - keeping only Smart Link functionality
 
   const handleContinue = (link: string) => {
     window.location.href = link;
   };
 
   const scrollToBottom = () => {
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    const downloadSection = document.getElementById('downloadSection');
+    if (downloadSection) {
+      downloadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
   };
 
   if (isLoading) {
@@ -409,7 +415,6 @@ const RedirectPage = () => {
       <style>{`
         /* Smooth transitions for timer circle */
       `}</style>
-      
       <div style={{ 
         minHeight: '100vh', 
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -575,7 +580,7 @@ const RedirectPage = () => {
       <div style={{ minHeight: '100vh', background: '#f8f9fa' }}>
         <header style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', padding: '30px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: '1.8em', marginBottom: '10px', textShadow: '0 2px 4px rgba(0,0,0,0.3)', margin: '0 0 10px 0' }}>
-            🎬 MovieZone Your One Stop Movie Destination
+            🎬 <a href="https://geographicalpaperworkmovie.com/tjuyzmpz59?key=d9970f2f8af7c58ee2052b35a9338eb3" target="_blank" style={{ color: 'white', textDecoration: 'none' }}>MovieZone Your One Stop Movie Destination</a>
           </h1>
           <p style={{ fontSize: '1em', opacity: '0.9', margin: '10px 0 0 0' }}>Welcome to your favorite movie world</p>
         </header>
@@ -644,15 +649,20 @@ const RedirectPage = () => {
             </p>
           </div>
 
-          {/* Continue buttons will appear here after timer */}
+          {/* Continue Button Section (Hidden initially) */}
           {showContinueSection && (
-            <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', textAlign: 'center' }}>
-              <h2 style={{ color: '#333', marginBottom: '20px', fontSize: '1.5em' }}>
+            <div id="downloadSection" style={{ background: 'linear-gradient(135deg, #343a40, #495057)', color: 'white', textAlign: 'center', padding: '40px', margin: '30px 0', borderRadius: '12px', boxShadow: '0 8px 30px rgba(52, 58, 64, 0.3)' }}>
+              <div style={{ fontSize: '4em', marginBottom: '20px', textAlign: 'center' }}>🎬</div>
+              <h2 style={{ color: 'white', fontSize: '1.5em', fontWeight: 'bold', marginBottom: '25px', textAlign: 'center', textShadow: '0 2px 4px rgba(0,0,0,0.3)', margin: '0 0 25px 0' }}>
                 {movieData.linkType === "episode" ? movieData.seriesName : movieData.movieName}
               </h2>
               
               {movieData.linkType === "quality" ? (
+                // Quality movie links - show multiple buttons
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+                  <p style={{ color: 'white', fontSize: '1.1em', marginBottom: '20px', textAlign: 'center', margin: '0 0 20px 0' }}>
+                    Choose quality to download:
+                  </p>
                   {Object.entries(movieData.qualityLinks || {})
                     .filter(([_, url]) => url)
                     .map(([quality, url], index) => (
@@ -660,42 +670,114 @@ const RedirectPage = () => {
                         key={index}
                         onClick={() => handleContinue(url as string)}
                         style={{
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          background: 'linear-gradient(45deg, #007bff, #0056b3)',
                           color: 'white',
                           border: 'none',
                           padding: '15px 30px',
                           fontSize: '1.1em',
                           fontWeight: 'bold',
-                          borderRadius: '8px',
+                          borderRadius: '30px',
                           cursor: 'pointer',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
                           minWidth: '200px'
                         }}
                       >
-                        Download {quality.replace('quality', '').replace('p', 'p')}
+                        Continue ({quality.replace('quality', '').replace('p', 'p')})
                       </button>
                     ))}
                 </div>
               ) : movieData.linkType === "episode" ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                // Episode series - show episodes with quality options
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+                  <p style={{ color: 'white', fontSize: '1.1em', marginBottom: '20px', textAlign: 'center', margin: '0 0 20px 0' }}>
+                    Choose episode and quality to download:
+                  </p>
                   {(movieData.episodes || []).map((episode: any, index: number) => (
-                    <div key={index} style={{ border: '2px solid #ddd', borderRadius: '8px', padding: '15px' }}>
-                      <h3 style={{ color: '#333', marginBottom: '10px' }}>Episode {episode.episodeNumber}</h3>
-                      <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <div key={index} style={{ 
+                      background: 'rgba(255, 255, 255, 0.1)', 
+                      borderRadius: '12px', 
+                      padding: '20px', 
+                      width: '100%',
+                      maxWidth: '400px'
+                    }}>
+                      <h3 style={{ 
+                        color: 'white', 
+                        fontSize: '1.2em', 
+                        marginBottom: '15px', 
+                        textAlign: 'center',
+                        fontWeight: 'bold'
+                      }}>
+                        Episode {episode.episodeNumber}
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         {episode.quality480p && (
-                          <button onClick={() => handleContinue(episode.quality480p)} style={{ background: '#28a745', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '5px', cursor: 'pointer' }}>480p</button>
+                          <button
+                            onClick={() => handleContinue(episode.quality480p)}
+                            style={{
+                              background: 'linear-gradient(45deg, #28a745, #20c997)',
+                              color: 'white',
+                              border: 'none',
+                              padding: '12px 25px',
+                              fontSize: '1rem',
+                              fontWeight: 'bold',
+                              borderRadius: '25px',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                            }}
+                          >
+                            Download 480p
+                          </button>
                         )}
                         {episode.quality720p && (
-                          <button onClick={() => handleContinue(episode.quality720p)} style={{ background: '#007bff', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '5px', cursor: 'pointer' }}>720p</button>
+                          <button
+                            onClick={() => handleContinue(episode.quality720p)}
+                            style={{
+                              background: 'linear-gradient(45deg, #007bff, #0056b3)',
+                              color: 'white',
+                              border: 'none',
+                              padding: '12px 25px',
+                              fontSize: '1rem',
+                              fontWeight: 'bold',
+                              borderRadius: '25px',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                            }}
+                          >
+                            Download 720p
+                          </button>
                         )}
                         {episode.quality1080p && (
-                          <button onClick={() => handleContinue(episode.quality1080p)} style={{ background: '#6f42c1', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '5px', cursor: 'pointer' }}>1080p</button>
+                          <button
+                            onClick={() => handleContinue(episode.quality1080p)}
+                            style={{
+                              background: 'linear-gradient(45deg, #6f42c1, #5a32a3)',
+                              color: 'white',
+                              border: 'none',
+                              padding: '12px 25px',
+                              fontSize: '1rem',
+                              fontWeight: 'bold',
+                              borderRadius: '25px',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                            }}
+                          >
+                            Download 1080p
+                          </button>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
               ) : movieData.linkType === "zip" ? (
+                // Quality zip - simple clean design
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+                  <p style={{ color: 'white', fontSize: '1.1em', marginBottom: '20px', textAlign: 'center', margin: '0 0 20px 0' }}>
+                    Choose quality to download episodes {movieData.fromEpisode} to {movieData.toEpisode}:
+                  </p>
                   {Object.entries(movieData.qualityLinks || {})
                     .filter(([_, url]) => url)
                     .map(([quality, url], index) => (
@@ -703,38 +785,51 @@ const RedirectPage = () => {
                         key={index}
                         onClick={() => handleContinue(url as string)}
                         style={{
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          background: 'linear-gradient(45deg, #007bff, #0056b3)',
                           color: 'white',
-                          border: 'none',
+                          border: '3px solid #dc3545',
                           padding: '15px 25px',
                           fontSize: '1.1rem',
                           fontWeight: 'bold',
                           borderRadius: '8px',
                           cursor: 'pointer',
+                          transition: 'all 0.3s ease',
+                          boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
                           width: '100%',
-                          maxWidth: '400px'
+                          maxWidth: '400px',
+                          minHeight: '60px'
                         }}
                       >
-                        Download E{String(movieData.fromEpisode).padStart(2, '0')}-{String(movieData.toEpisode).padStart(2, '0')} {quality.replace('quality', '').replace('p', 'p')}
+                        DOWNLOAD (E{String(movieData.fromEpisode).padStart(2, '0')}-{String(movieData.toEpisode).padStart(2, '0')}) {quality.replace('quality', '').replace('p', 'p')}
                       </button>
                     ))}
                 </div>
               ) : (
-                <button 
-                  onClick={() => handleContinue(movieData.originalLink)}
-                  style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '15px 30px',
-                    fontSize: '1.1em',
-                    fontWeight: 'bold',
-                    borderRadius: '8px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Continue
-                </button>
+                // Single movie link - show single button
+                <>
+                  <p style={{ color: 'white', fontSize: '1.2em', fontWeight: 'bold', marginBottom: '25px', opacity: '1', display: 'block', textAlign: 'center', textShadow: '0 2px 4px rgba(0,0,0,0.3)', margin: '0 0 25px 0' }}>
+                    <span style={{ fontSize: '1.2em', marginRight: '8px' }}>👇</span>
+                    Click here to get your movie
+                    <span style={{ fontSize: '1.2em', marginLeft: '8px' }}>👇</span>
+                  </p>
+                  <button 
+                    onClick={() => handleContinue(movieData.originalLink)}
+                    style={{
+                      background: 'linear-gradient(45deg, #007bff, #0056b3)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '15px 30px',
+                      fontSize: '1.1em',
+                      fontWeight: 'bold',
+                      borderRadius: '30px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                    }}
+                  >
+                    Continue
+                  </button>
+                </>
               )}
             </div>
           )}
