@@ -1,11 +1,8 @@
 import { QueryClient } from "@tanstack/react-query";
 
-// API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-// Helper function to build API URLs
+// Helper function to build API URLs (using relative paths for same-origin requests)
 const buildApiUrl = (endpoint: string): string => {
-  return `${API_BASE_URL}${endpoint}`;
+  return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 };
 
 export const queryClient = new QueryClient({
