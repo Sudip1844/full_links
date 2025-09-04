@@ -581,14 +581,12 @@ const RedirectPage = () => {
       <div style={{ minHeight: '100vh', background: '#f8f9fa' }}>
         <header style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', padding: '30px 20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: '1.8em', marginBottom: '10px', textShadow: '0 2px 4px rgba(0,0,0,0.3)', margin: '0 0 10px 0' }}>
-            🎬 <a href="https://geographicalpaperworkmovie.com/tjuyzmpz59?key=d9970f2f8af7c58ee2052b35a9338eb3" target="_blank" style={{ color: 'white', textDecoration: 'none' }}>MovieZone Your One Stop Movie Destination</a>
+            🎬 MovieZone Your One Stop Movie Destination
           </h1>
           <p style={{ fontSize: '1em', opacity: '0.9', margin: '10px 0 0 0' }}>Welcome to your favorite movie world</p>
         </header>
 
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-
-
           {/* Content Sections */}
           <div style={{ background: 'white', marginBottom: '20px', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', borderLeft: '4px solid #667eea' }}>
             <h2 style={{ color: '#333', marginBottom: '12px', fontSize: '1.1em', margin: '0 0 12px 0' }}>✅ Wide Range of Movie Categories</h2>
