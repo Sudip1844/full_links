@@ -13,6 +13,7 @@
    - ❌ DO NOT change Netlify deployment settings
    - ❌ DO NOT modify client hosting configuration
    - ✅ MUST maintain https://mkvmoviepoint.netlify.app
+   - ✅ Client is now Static HTML (converted from React) for better performance
 
 3. **Server Configuration**:
    - ❌ DO NOT change Render hosting setup

@@ -35,7 +35,7 @@ CLIENT_URL=https://আপনার-netlify-app.netlify.app
 
 ### 5. Deploy করার পর
 - আপনার Render app URL copy করুন (e.g., https://moviezone-server.onrender.com)
-- এই URL টি client configuration এ use করবেন
+- এই URL টি client configuration এ use করবেন (Static HTML এ netlify.toml এ already configured)
 
 ### 6. Troubleshooting
 - যদি deploy fail হয়, logs check করুন

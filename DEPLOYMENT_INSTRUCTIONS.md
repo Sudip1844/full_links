@@ -1,29 +1,30 @@
-# Deployment Instructions
+# Deployment Instructions (Static HTML Version)
 
-## Client Deployment (Netlify)
+## Client Deployment (Netlify) - Static HTML
+
+**নোট: MovieZone client এখন React থেকে Static HTML এ convert করা হয়েছে। কোনো build process এর প্রয়োজন নেই।**
 
 ### Prerequisites
 1. Create a Netlify account
-2. Install Netlify CLI: `npm install -g netlify-cli`
+2. (Optional) Install Netlify CLI: `npm install -g netlify-cli`
 
-### Steps
-1. **Build the client**:
+### Steps (Static HTML Deployment)
+1. **No Build Required**:
    ```bash
    cd client
-   npm install
-   npm run build
+   # Files are ready for deployment: index.html, styles.css, script.js, netlify.toml
    ```
 
 2. **Deploy to Netlify**:
-   - Option A: Drag and drop the `client/dist` folder to Netlify dashboard
+   - Option A: Drag and drop the entire `client` folder to Netlify dashboard
    - Option B: Use Netlify CLI:
      ```bash
-     netlify deploy --prod --dir=dist
+     netlify deploy --prod --dir=client
      ```
 
-3. **Set Environment Variables in Netlify**:
-   - Go to Site settings → Environment variables
-   - Add: `VITE_API_URL` = `https://your-render-app.onrender.com`
+3. **No Environment Variables Required**:
+   - Static HTML version এ কোনো build-time environment variables প্রয়োজন নেই
+   - API URLs automatically configured in JavaScript
 
 ## Server Deployment (Render)
 

@@ -1,43 +1,61 @@
-# Netlify Deployment Guide for MovieZone Client
+# Netlify Deployment Guide for MovieZone Client (Static HTML Version)
 
 ## ক্লায়েন্ট Netlify তে Deploy করার স্টেপ
+
+**নোট: MovieZone client এখন React থেকে Static HTML এ convert করা হয়েছে better performance এবং simplified deployment এর জন্য।**
 
 ### 1. Netlify Account এবং Setup
 - Netlify.com এ একটি account তৈরি করুন
 - GitHub repository connect করুন
 
-### 2. Site Settings কনফিগার করুন
+### 2. Site Settings কনফিগার করুন (Static HTML)
 - "New site from Git" ক্লিক করুন
 - আপনার GitHub repository select করুন
 - **Base directory**: `client`
-- **Build command**: `npm run build`
-- **Publish directory**: `client/dist`
+- **Build command**: `echo 'Static HTML build - no build step required'`
+- **Publish directory**: `client` (root of client folder)
 
-### 3. Environment Variables Setup (Netlify Dashboard এ)
-নিচের environment variables গুলো Netlify এর dashboard এ add করুন:
+### 3. Environment Variables Setup (Static HTML - Auto-configured)
+Static HTML version এ কোনো build-time environment variables এর প্রয়োজন নেই। API calls হবে runtime এ JavaScript দিয়ে।
 
-```
-VITE_API_URL=https://আপনার-render-app.onrender.com
-NODE_ENV=production
-```
+### 4. Build Settings (Static HTML)
+- **Build tool**: None (Static HTML files)
+- **Node.js**: Not required for deployment
+- **Build process**: No compilation needed
 
-### 4. Build Settings
-Netlify automatically detect করবে:
-- Node.js version: 20
-- NPM version: 10
-- Build tool: Vite
-
-### 5. netlify.toml File (Already Configured)
+### 5. netlify.toml File (Static HTML Version - Already Configured)
 ```toml
+# Static HTML Build Configuration for MovieZone Admin Panel
 [build]
-  base = "."
-  publish = "dist"
-  command = "npm run build"
+  publish = "."
+  command = "echo 'Static HTML build - no build step required'"
 
 [build.environment]
   NODE_VERSION = "20"
-  NPM_VERSION = "10"
 
+# Short link routes to RedirectPage for countdown/ads UI
+[[redirects]]
+  from = "/m/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/e/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/z/*"
+  to = "/index.html"
+  status = 200
+
+# API proxy to backend server  
+[[redirects]]
+  from = "/api/*"
+  to = "https://full-links.onrender.com/api/:splat"
+  status = 200
+
+# Catch-all for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"

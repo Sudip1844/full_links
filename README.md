@@ -20,6 +20,12 @@ MovieZone is a professional movie link shortening service designed for cross-pla
 
 ## 🌟 Key Features
 
+### Frontend Architecture (Static HTML)
+- **High Performance**: Static HTML/CSS/JavaScript for fastest loading
+- **No Build Process**: Direct deployment without compilation
+- **Smaller Bundle Size**: Reduced from React to pure HTML
+- **Better SEO**: Static files for improved search engine optimization
+
 ### Universal API Integration
 - **Cross-Platform Compatible**: Works with Telegram bots, Discord bots, websites, and any external service
 - **Secure Token Authentication**: Bearer token system for API access
@@ -51,11 +57,13 @@ MovieZone is a professional movie link shortening service designed for cross-pla
 │   ├── index.ts         # Server entry point with minimal logging
 │   ├── routes.ts        # API routes and redirect handlers
 │   └── storage.ts       # Database interface
-├── client/              # Frontend React application (Deployed on Netlify)
-│   ├── src/             # React components and pages
-│   ├── netlify.toml     # Netlify redirect configuration
-│   ├── .env.production  # Production environment variables
-│   └── build/           # Production build directory
+├── client/              # Frontend Static HTML Website (Deployed on Netlify) - Converted from React
+│   ├── index.html       # Main HTML file containing all pages (Login, Admin Panel, Redirect)
+│   ├── styles.css       # Custom CSS converted from Tailwind and shadcn/ui
+│   ├── script.js        # Vanilla JavaScript replacing React functionality
+│   └── netlify.toml     # Deployment configuration for static hosting
+├── react-website/       # Original React codebase (Backup for reference)
+│   └── src/             # Original React components and pages
 ├── shared/              # Shared TypeScript schemas
 └── run-dev.js           # Development server launcher
 ```
