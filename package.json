@@ -358,10 +358,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
-    "server:dev": "cd server && npm run dev",
-    "client:dev": "cd client && npm run dev",
-    "dev:server-only": "node run-dev.js",
+    "dev": "node run-dev.js",
     "build": "tsc && cd client && npm run build",
     "start": "node server/dist/index.js"
   },

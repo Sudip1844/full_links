@@ -16,12 +16,9 @@ export default defineConfig({
     minify: "esbuild",
   },
   server: {
-    host: "0.0.0.0",
-    port: 5000,
-    strictPort: false,
     proxy: {
       "/api": {
-        target: process.env.VITE_API_URL || "http://localhost:3000",
+        target: process.env.VITE_API_URL || "http://localhost:5000",
         changeOrigin: true,
       },
     },
