@@ -377,6 +377,11 @@ const AdminPanel = {
             const token = document.getElementById('generated-token').value;
             if (token) utils.copyToClipboard(token);
         });
+
+        // Database search and sort
+        document.getElementById('search-links').addEventListener('input', AdminPanel.handleDatabaseSearch);
+        document.getElementById('sort-by').addEventListener('change', AdminPanel.handleDatabaseSort);
+        document.getElementById('sort-order').addEventListener('change', AdminPanel.handleDatabaseSort);
     },
 
     handleSingleLinkSubmit: async (e) => {
@@ -668,32 +673,61 @@ const AdminPanel = {
 
     loadDatabaseTable: async () => {
         try {
-            const links = await utils.apiRequest('/api/movie-links');
+            // Fetch all types of links in parallel
+            const [singleLinks, qualityLinks, episodes, zipLinks] = await Promise.all([
+                utils.apiRequest('/api/movie-links').catch(() => []),
+                utils.apiRequest('/api/quality-movie-links').catch(() => []),
+                utils.apiRequest('/api/quality-episodes').catch(() => []),
+                utils.apiRequest('/api/quality-zips').catch(() => [])
+            ]);
+
+            // Combine all links with type information
+            const allLinks = [
+                ...singleLinks.map(link => ({ ...link, type: 'Single', shortUrl: `/m/${link.shortId || link.short_id}` })),
+                ...qualityLinks.map(link => ({ ...link, type: 'Quality', shortUrl: `/m/${link.shortId || link.short_id}` })),
+                ...episodes.map(link => ({ ...link, type: 'Episodes', shortUrl: `/e/${link.shortId || link.short_id}`, movieName: link.seriesName || link.series_name })),
+                ...zipLinks.map(link => ({ ...link, type: 'Quality Zip', shortUrl: `/z/${link.shortId || link.short_id}` }))
+            ];
+
             const tbody = document.getElementById('database-table');
             
-            if (links.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted-foreground">No links found</td></tr>';
+            if (allLinks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted-foreground">No links found</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = links.map(link => `
+            // Store data for search/filter functionality
+            AdminPanel.allLinksData = allLinks;
+
+            // Sort by date (newest first)
+            allLinks.sort((a, b) => {
+                const dateA = new Date(a.dateAdded || a.date_added).getTime();
+                const dateB = new Date(b.dateAdded || b.date_added).getTime();
+                return dateB - dateA;
+            });
+
+            tbody.innerHTML = allLinks.map(link => `
                 <tr>
                     <td>${link.id}</td>
-                    <td>${link.movieName}</td>
-                    <td><code class="text-xs">${link.shortId}</code></td>
+                    <td>${link.movieName || link.movie_name}</td>
+                    <td><code class="text-xs">${link.shortId || link.short_id}</code></td>
                     <td>${link.views || 0}</td>
                     <td>
-                        <span class="badge ${link.adsEnabled ? 'badge-primary' : 'badge-secondary'}">
-                            ${link.adsEnabled ? 'Enabled' : 'Disabled'}
+                        <span class="badge ${(link.adsEnabled !== undefined ? link.adsEnabled : link.ads_enabled) ? 'badge-primary' : 'badge-secondary'}">
+                            ${(link.adsEnabled !== undefined ? link.adsEnabled : link.ads_enabled) ? 'Enabled' : 'Disabled'}
                         </span>
                     </td>
-                    <td>${utils.formatDate(link.dateAdded)}</td>
+                    <td><span class="badge badge-outline">${link.type}</span></td>
+                    <td>${utils.formatDate(link.dateAdded || link.date_added)}</td>
                     <td>
                         <div class="flex space-x-2">
-                            <button onclick="AdminPanel.editLink(${link.id})" class="button button-outline" style="padding: 0.25rem 0.5rem;">
+                            <button onclick="utils.copyToClipboard('${window.location.origin}${link.shortUrl}')" class="button button-outline" style="padding: 0.25rem 0.5rem;" title="Copy Link">
+                                <i data-lucide="copy" style="width: 0.75rem; height: 0.75rem;"></i>
+                            </button>
+                            <button onclick="AdminPanel.editLink(${link.id}, '${link.type}')" class="button button-outline" style="padding: 0.25rem 0.5rem;" title="Edit">
                                 <i data-lucide="edit" style="width: 0.75rem; height: 0.75rem;"></i>
                             </button>
-                            <button onclick="AdminPanel.deleteLink(${link.id})" class="button button-outline" style="padding: 0.25rem 0.5rem;">
+                            <button onclick="AdminPanel.deleteLink(${link.id}, '${link.type}')" class="button button-outline" style="padding: 0.25rem 0.5rem;" title="Delete">
                                 <i data-lucide="trash-2" style="width: 0.75rem; height: 0.75rem;"></i>
                             </button>
                         </div>
@@ -704,6 +738,7 @@ const AdminPanel = {
             lucide.createIcons();
         } catch (error) {
             console.error('Failed to load database table:', error);
+            document.getElementById('database-table').innerHTML = '<tr><td colspan="8" class="text-center text-destructive">Failed to load links</td></tr>';
         }
     },
 
@@ -747,21 +782,39 @@ const AdminPanel = {
         }
     },
 
-    editLink: (id) => {
-        utils.showToast('Edit Feature', 'Edit functionality will be implemented in the next update', 'default');
+    editLink: (id, type) => {
+        utils.showToast('Edit Feature', `Edit functionality for ${type} links will be implemented in the next update`, 'default');
     },
 
-    deleteLink: async (id) => {
-        if (!confirm('Are you sure you want to delete this link?')) return;
+    deleteLink: async (id, type) => {
+        if (!confirm(`Are you sure you want to delete this ${type} link?`)) return;
         
         try {
-            await utils.apiRequest(`/api/movie-links/${id}`, { method: 'DELETE' });
-            utils.showToast('Success!', 'Link deleted successfully', 'success');
+            let endpoint;
+            switch (type) {
+                case 'Single':
+                    endpoint = `/api/movie-links/${id}`;
+                    break;
+                case 'Quality':
+                    endpoint = `/api/quality-movie-links/${id}`;
+                    break;
+                case 'Episodes':
+                    endpoint = `/api/quality-episodes/${id}`;
+                    break;
+                case 'Quality Zip':
+                    endpoint = `/api/quality-zips/${id}`;
+                    break;
+                default:
+                    endpoint = `/api/movie-links/${id}`;
+            }
+            
+            await utils.apiRequest(endpoint, { method: 'DELETE' });
+            utils.showToast('Success!', `${type} link deleted successfully`, 'success');
             AdminPanel.loadDatabaseTable();
             AdminPanel.loadRecentLinks();
             AdminPanel.loadStatistics();
         } catch (error) {
-            utils.showToast('Error', 'Failed to delete link', 'destructive');
+            utils.showToast('Error', `Failed to delete ${type} link`, 'destructive');
         }
     },
 
@@ -785,6 +838,86 @@ const AdminPanel = {
         } catch (error) {
             utils.showToast('Error', 'Failed to delete token', 'destructive');
         }
+    },
+
+    // Store all links for search/sort functionality
+    allLinksData: [],
+
+    handleDatabaseSearch: () => {
+        AdminPanel.renderFilteredLinks();
+    },
+
+    handleDatabaseSort: () => {
+        AdminPanel.renderFilteredLinks();
+    },
+
+    renderFilteredLinks: () => {
+        const searchTerm = document.getElementById('search-links').value.toLowerCase();
+        const sortBy = document.getElementById('sort-by').value;
+        const sortOrder = document.getElementById('sort-order').value;
+
+        let filteredLinks = AdminPanel.allLinksData.filter(link => {
+            const movieName = (link.movieName || link.movie_name || '').toLowerCase();
+            const shortId = (link.shortId || link.short_id || '').toLowerCase();
+            const type = (link.type || '').toLowerCase();
+            
+            return movieName.includes(searchTerm) || 
+                   shortId.includes(searchTerm) || 
+                   type.includes(searchTerm);
+        });
+
+        // Sort filtered results
+        filteredLinks.sort((a, b) => {
+            if (sortBy === 'name') {
+                const nameA = (a.movieName || a.movie_name || '').toLowerCase();
+                const nameB = (b.movieName || b.movie_name || '').toLowerCase();
+                const comparison = nameA.localeCompare(nameB);
+                return sortOrder === 'asc' ? comparison : -comparison;
+            } else {
+                const dateA = new Date(a.dateAdded || a.date_added).getTime();
+                const dateB = new Date(b.dateAdded || b.date_added).getTime();
+                const comparison = dateA - dateB;
+                return sortOrder === 'asc' ? comparison : -comparison;
+            }
+        });
+
+        const tbody = document.getElementById('database-table');
+        
+        if (filteredLinks.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted-foreground">No links found matching your search</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = filteredLinks.map(link => `
+            <tr>
+                <td>${link.id}</td>
+                <td>${link.movieName || link.movie_name}</td>
+                <td><code class="text-xs">${link.shortId || link.short_id}</code></td>
+                <td>${link.views || 0}</td>
+                <td>
+                    <span class="badge ${(link.adsEnabled !== undefined ? link.adsEnabled : link.ads_enabled) ? 'badge-primary' : 'badge-secondary'}">
+                        ${(link.adsEnabled !== undefined ? link.adsEnabled : link.ads_enabled) ? 'Enabled' : 'Disabled'}
+                    </span>
+                </td>
+                <td><span class="badge badge-outline">${link.type}</span></td>
+                <td>${utils.formatDate(link.dateAdded || link.date_added)}</td>
+                <td>
+                    <div class="flex space-x-2">
+                        <button onclick="utils.copyToClipboard('${window.location.origin}${link.shortUrl}')" class="button button-outline" style="padding: 0.25rem 0.5rem;" title="Copy Link">
+                            <i data-lucide="copy" style="width: 0.75rem; height: 0.75rem;"></i>
+                        </button>
+                        <button onclick="AdminPanel.editLink(${link.id}, '${link.type}')" class="button button-outline" style="padding: 0.25rem 0.5rem;" title="Edit">
+                            <i data-lucide="edit" style="width: 0.75rem; height: 0.75rem;"></i>
+                        </button>
+                        <button onclick="AdminPanel.deleteLink(${link.id}, '${link.type}')" class="button button-outline" style="padding: 0.25rem 0.5rem;" title="Delete">
+                            <i data-lucide="trash-2" style="width: 0.75rem; height: 0.75rem;"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+        lucide.createIcons();
     }
 };
 
