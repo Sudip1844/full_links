@@ -144,12 +144,9 @@ const TabManager = {
 // Authentication system
 const Auth = {
     init: () => {
-        // Check if already logged in
-        const isLoggedIn = localStorage.getItem('moviezone_admin_logged_in');
-        if (isLoggedIn === 'true') {
-            Auth.showAdminPanel();
-        }
-
+        // Set API base URL
+        Auth.setApiBaseUrl();
+        
         // Fetch admin credentials on page load
         Auth.fetchCredentials();
 
@@ -158,53 +155,90 @@ const Auth = {
         
         // Logout button handler
         document.getElementById('logout-button').addEventListener('click', Auth.handleLogout);
+        
+        // Always start with login page visible
+        Auth.showLoginPage();
+    },
+
+    setApiBaseUrl: () => {
+        // Better API URL detection
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            AppState.apiBaseUrl = 'http://localhost:5000';
+        } else if (window.location.hostname.includes('netlify.app')) {
+            // Netlify proxy setup - API calls go through same origin
+            AppState.apiBaseUrl = window.location.origin;
+        } else {
+            AppState.apiBaseUrl = window.location.origin;
+        }
     },
 
     fetchCredentials: async () => {
         try {
-            AppState.apiBaseUrl = window.location.origin.includes('localhost') 
-                ? 'http://localhost:5000' 
-                : window.location.origin;
-
             const response = await utils.apiRequest('/api/admin-config');
-            AppState.adminCredentials.id = response.adminId;
-            AppState.adminCredentials.password = response.adminPassword;
-            AppState.credentialsLoaded = true;
+            
+            if (response.adminId && response.adminPassword) {
+                AppState.adminCredentials.id = response.adminId;
+                AppState.adminCredentials.password = response.adminPassword;
+                AppState.credentialsLoaded = true;
+                console.log('Admin credentials loaded successfully');
+            } else {
+                throw new Error('Invalid credentials response');
+            }
         } catch (error) {
             console.error('Failed to load admin credentials:', error);
-            AppState.credentialsLoaded = true; // Still allow login attempt
+            AppState.credentialsLoaded = false;
+            utils.showToast('Configuration Error', 'Failed to load admin configuration. Please try again.', 'destructive');
         }
     },
 
     handleLogin: async (e) => {
         e.preventDefault();
         
-        if (!AppState.credentialsLoaded) {
-            utils.showToast('Please wait', 'Loading admin configuration...', 'default');
+        const adminId = document.getElementById('admin-id').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        // Validate input
+        if (!adminId || !password) {
+            utils.showToast('Validation Error', 'Please enter both Admin ID and Password', 'destructive');
             return;
         }
 
-        const formData = new FormData(e.target);
-        const adminId = document.getElementById('admin-id').value;
-        const password = document.getElementById('password').value;
+        if (!AppState.credentialsLoaded) {
+            utils.showToast('Please wait', 'Loading admin configuration...', 'default');
+            // Try to fetch credentials again
+            await Auth.fetchCredentials();
+            if (!AppState.credentialsLoaded) {
+                return;
+            }
+        }
 
         const loginButton = document.getElementById('login-button');
         loginButton.textContent = 'Logging in...';
         loginButton.disabled = true;
 
-        // Simulate delay for better UX
-        await new Promise(resolve => setTimeout(resolve, 500));
+        try {
+            // Simulate delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-        if (adminId === AppState.adminCredentials.id && password === AppState.adminCredentials.password) {
-            localStorage.setItem('moviezone_admin_logged_in', 'true');
-            utils.showToast('Login Successful', 'Welcome to MovieZone Admin Panel', 'success');
-            Auth.showAdminPanel();
-        } else {
-            utils.showToast('Login Failed', 'Invalid credentials. Please try again.', 'destructive');
+            // Validate credentials
+            if (adminId === AppState.adminCredentials.id && password === AppState.adminCredentials.password) {
+                AppState.isLoggedIn = true;
+                localStorage.setItem('moviezone_admin_logged_in', 'true');
+                utils.showToast('Login Successful', 'Welcome to MovieZone Admin Panel', 'success');
+                Auth.showAdminPanel();
+            } else {
+                utils.showToast('Login Failed', 'Invalid credentials. Please try again.', 'destructive');
+                // Clear the form
+                document.getElementById('admin-id').value = '';
+                document.getElementById('password').value = '';
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            utils.showToast('Login Error', 'An error occurred during login. Please try again.', 'destructive');
+        } finally {
+            loginButton.textContent = 'Login';
+            loginButton.disabled = false;
         }
-
-        loginButton.textContent = 'Login';
-        loginButton.disabled = false;
     },
 
     handleLogout: () => {
@@ -222,13 +256,32 @@ const Auth = {
         utils.showToast('Logged out', 'You have been logged out successfully', 'default');
     },
 
+    showLoginPage: () => {
+        // Always show login page first, hide others
+        document.getElementById('login-page').classList.remove('hidden');
+        document.getElementById('admin-page').classList.add('hidden');
+        if (document.getElementById('redirect-page')) {
+            document.getElementById('redirect-page').classList.add('hidden');
+        }
+        
+        // Clear any stored login state
+        AppState.isLoggedIn = false;
+    },
+
     showAdminPanel: () => {
-        AppState.isLoggedIn = true;
+        // Only show admin panel if properly authenticated
+        if (!AppState.isLoggedIn) {
+            console.error('Attempted to show admin panel without authentication');
+            Auth.showLoginPage();
+            return;
+        }
         
         // Hide login page, show admin panel
         document.getElementById('login-page').classList.add('hidden');
         document.getElementById('admin-page').classList.remove('hidden');
-        document.getElementById('redirect-page').classList.add('hidden');
+        if (document.getElementById('redirect-page')) {
+            document.getElementById('redirect-page').classList.add('hidden');
+        }
         
         // Load admin panel data
         AdminPanel.init();

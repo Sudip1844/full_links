@@ -72,7 +72,6 @@
                         <button class="tabs-trigger active" data-tab="home">Home</button>
                         <button class="tabs-trigger" data-tab="database">Database</button>
                         <button class="tabs-trigger" data-tab="api">API</button>
-                        <button class="tabs-trigger" data-tab="settings">Settings</button>
                     </div>
 
                     <!-- Home Tab -->
@@ -451,21 +450,6 @@
                         </div>
                     </div>
 
-                    <!-- Settings Tab -->
-                    <div class="tabs-content hidden" id="tab-settings">
-                        <div class="card">
-                            <div class="card-content p-6">
-                                <h3 class="text-lg font-semibold mb-4">Admin Settings</h3>
-                                <div class="bg-muted p-4 rounded-lg">
-                                    <h4 class="font-medium mb-2">Credential Management</h4>
-                                    <p class="text-sm text-muted-foreground">
-                                        Admin credentials are securely managed through the Supabase database. 
-                                        To update admin credentials, please access the Supabase dashboard directly.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -597,5 +581,18 @@
 
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="script.js"></script>
+    <script>
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Lucide icons
+            lucide.createIcons();
+            
+            // Initialize tab system
+            TabManager.init();
+            
+            // Initialize authentication
+            Auth.init();
+        });
+    </script>
 </body>
 </html>
