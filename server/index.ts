@@ -65,8 +65,8 @@ app.use((req, res, next) => {
   // Server-only mode for Render deployment
   // No client serving needed - client will be hosted separately
 
-  // For Render deployment, use process.env.PORT. For development, use 5000
-  const port = process.env.PORT || (process.env.NODE_ENV === 'production' ? 10000 : 5000);
+  // For Render deployment, use process.env.PORT. For development, use 3000 (client uses 5000)
+  const port = process.env.PORT || (process.env.NODE_ENV === 'production' ? 10000 : 3000);
   server.listen({
     port,
     host: "0.0.0.0",

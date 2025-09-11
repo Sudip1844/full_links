@@ -17,7 +17,7 @@ const serverProcess = spawn('npx', ['tsx', 'index.ts'], {
   env: { 
     ...process.env, 
     NODE_ENV: 'development',
-    PORT: '5000'
+    PORT: '3000'
   }
 });
 
