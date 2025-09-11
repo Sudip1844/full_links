@@ -52,7 +52,33 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Serve static files from client directory for Replit development first
+  if (process.env.NODE_ENV === 'development') {
+    const path = await import('path');
+    const url = await import('url');
+    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+    const clientPath = path.join(__dirname, '..', 'client');
+    
+    console.log(`Serving static files from: ${clientPath}`);
+    app.use(express.static(clientPath));
+  }
+  
   const server = await registerRoutes(app);
+
+  // SPA Fallback - serve index.html for non-API routes (must be after API routes)
+  if (process.env.NODE_ENV === 'development') {
+    const path = await import('path');
+    const url = await import('url');
+    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+    const clientPath = path.join(__dirname, '..', 'client');
+    
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api/')) {
+        return next();
+      }
+      res.sendFile(path.join(clientPath, 'index.html'));
+    });
+  }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -61,9 +87,6 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
     throw err;
   });
-
-  // Server-only mode for Render deployment
-  // No client serving needed - client will be hosted separately
 
   // For Render deployment, use process.env.PORT. For development, use 5000
   const port = process.env.PORT || (process.env.NODE_ENV === 'production' ? 10000 : 5000);

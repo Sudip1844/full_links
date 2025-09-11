@@ -15,6 +15,10 @@ build = ["npm", "run", "build"]
 localPort = 5000
 externalPort = 80
 
+[[ports]]
+localPort = 37187
+externalPort = 3000
+
 [workflows]
 runButton = "Project"
 
@@ -25,15 +29,15 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "HTML Server"
+args = "MovieZone Server"
 
 [[workflows.workflow]]
-name = "HTML Server"
+name = "MovieZone Server"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd client && npx http-server -p 5000 -a 0.0.0.0"
+args = "cd server && npm run dev"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
