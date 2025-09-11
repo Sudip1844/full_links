@@ -1,13 +1,601 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
-    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
-  </body>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MovieZone Admin Panel - Secure movie link shortening service with Universal API integration for multiple platforms.">
+    <title>MovieZone Admin Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="h-full">
+    <!-- Login Page -->
+    <div id="login-page" class="min-h-screen flex items-center justify-center bg-background p-4">
+        <div class="card w-full max-w-md">
+            <div class="card-header text-center">
+                <h3 class="card-title text-2xl font-bold text-primary">
+                    MovieZone Admin Login
+                </h3>
+            </div>
+            <div class="card-content">
+                <form id="login-form" class="space-y-4">
+                    <div class="space-y-2">
+                        <label for="admin-id" class="label">Admin ID</label>
+                        <input
+                            id="admin-id"
+                            type="text"
+                            class="input"
+                            placeholder="Enter admin ID"
+                            required
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="password" class="label">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            class="input"
+                            placeholder="Enter password"
+                            required
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        class="button button-primary w-full"
+                        id="login-button"
+                    >
+                        Login
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel (hidden by default) -->
+    <div id="admin-page" class="hidden">
+        <div class="min-h-screen bg-background">
+            <!-- Header -->
+            <header class="bg-primary text-primary-foreground p-4">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold">MovieZone Admin Panel</h1>
+                    <button id="logout-button" class="button button-outline text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary">
+                        <i data-lucide="log-out" class="w-4 h-4 mr-2"></i>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <div class="container mx-auto p-6">
+                <!-- Tabs -->
+                <div class="tabs" data-tabs="admin-tabs">
+                    <div class="tabs-list">
+                        <button class="tabs-trigger active" data-tab="home">Home</button>
+                        <button class="tabs-trigger" data-tab="database">Database</button>
+                        <button class="tabs-trigger" data-tab="api">API</button>
+                        <button class="tabs-trigger" data-tab="settings">Settings</button>
+                    </div>
+
+                    <!-- Home Tab -->
+                    <div class="tabs-content active" id="tab-home">
+                        <!-- Statistics Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div class="card">
+                                <div class="card-content p-4">
+                                    <div class="text-sm text-muted-foreground">Total Links</div>
+                                    <div class="text-2xl font-bold" id="total-links">0</div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-content p-4">
+                                    <div class="text-sm text-muted-foreground">Today's Links</div>
+                                    <div class="text-2xl font-bold" id="today-links">0</div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-content p-4">
+                                    <div class="text-sm text-muted-foreground">Total Views</div>
+                                    <div class="text-2xl font-bold" id="total-views">0</div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-content p-4">
+                                    <div class="text-sm text-muted-foreground">Today's Views</div>
+                                    <div class="text-2xl font-bold" id="today-views">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Link Creation Tabs -->
+                        <div class="tabs" data-tabs="link-creation">
+                            <div class="tabs-list">
+                                <button class="tabs-trigger active" data-tab="single">Single Link</button>
+                                <button class="tabs-trigger" data-tab="quality">Quality Links</button>
+                                <button class="tabs-trigger" data-tab="episodes">Episodes</button>
+                                <button class="tabs-trigger" data-tab="zip">Quality Zip</button>
+                            </div>
+
+                            <!-- Single Link Tab -->
+                            <div class="tabs-content active" id="tab-single">
+                                <div class="card">
+                                    <div class="card-content p-6">
+                                        <form id="single-link-form" class="space-y-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <label for="movie-name" class="label">Movie Name</label>
+                                                    <input id="movie-name" type="text" class="input" placeholder="Enter movie name" required />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label for="original-link" class="label">Original Link</label>
+                                                    <input id="original-link" type="url" class="input" placeholder="Enter download link" required />
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <input type="checkbox" id="ads-enabled" class="checkbox" checked />
+                                                <label for="ads-enabled" class="label">Enable Ads</label>
+                                            </div>
+                                            <button type="submit" class="button button-primary">Generate Short Link</button>
+                                        </form>
+                                        
+                                        <div id="generated-link-container" class="hidden mt-4 p-4 bg-muted rounded-lg">
+                                            <div class="text-sm text-muted-foreground mb-2">Generated Link:</div>
+                                            <div class="flex items-center space-x-2">
+                                                <input id="generated-link" type="text" class="input flex-1" readonly />
+                                                <button id="copy-link" class="button button-outline">
+                                                    <i data-lucide="copy" class="w-4 h-4"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quality Links Tab -->
+                            <div class="tabs-content hidden" id="tab-quality">
+                                <div class="card">
+                                    <div class="card-content p-6">
+                                        <form id="quality-link-form" class="space-y-4">
+                                            <div class="space-y-2">
+                                                <label for="quality-movie-name" class="label">Movie Name</label>
+                                                <input id="quality-movie-name" type="text" class="input" placeholder="Enter movie name" required />
+                                            </div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div class="space-y-2">
+                                                    <label for="quality-480p" class="label">480p Link</label>
+                                                    <input id="quality-480p" type="url" class="input" placeholder="480p download link" />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label for="quality-720p" class="label">720p Link</label>
+                                                    <input id="quality-720p" type="url" class="input" placeholder="720p download link" />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label for="quality-1080p" class="label">1080p Link</label>
+                                                    <input id="quality-1080p" type="url" class="input" placeholder="1080p download link" />
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <input type="checkbox" id="quality-ads-enabled" class="checkbox" checked />
+                                                <label for="quality-ads-enabled" class="label">Enable Ads</label>
+                                            </div>
+                                            <button type="submit" class="button button-primary">Generate Quality Link</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Episodes Tab -->
+                            <div class="tabs-content hidden" id="tab-episodes">
+                                <div class="card">
+                                    <div class="card-content p-6">
+                                        <form id="episodes-form" class="space-y-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <label for="series-name" class="label">Series Name</label>
+                                                    <input id="series-name" type="text" class="input" placeholder="Enter series name" required />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label for="start-episode" class="label">Start From Episode</label>
+                                                    <input id="start-episode" type="number" class="input" placeholder="1" min="1" value="1" />
+                                                </div>
+                                            </div>
+                                            <div id="episodes-container">
+                                                <div class="episode-item border p-4 rounded-lg">
+                                                    <h4 class="font-medium mb-3">Episode 1</h4>
+                                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                                        <input type="url" class="input quality-480p" placeholder="480p link" />
+                                                        <input type="url" class="input quality-720p" placeholder="720p link" />
+                                                        <input type="url" class="input quality-1080p" placeholder="1080p link" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="add-episode" class="button button-outline">Add Episode</button>
+                                            <div class="flex items-center space-x-2">
+                                                <input type="checkbox" id="episodes-ads-enabled" class="checkbox" checked />
+                                                <label for="episodes-ads-enabled" class="label">Enable Ads</label>
+                                            </div>
+                                            <button type="submit" class="button button-primary">Generate Episodes Link</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quality Zip Tab -->
+                            <div class="tabs-content hidden" id="tab-zip">
+                                <div class="card">
+                                    <div class="card-content p-6">
+                                        <form id="zip-form" class="space-y-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div class="space-y-2">
+                                                    <label for="zip-movie-name" class="label">Movie/Series Name</label>
+                                                    <input id="zip-movie-name" type="text" class="input" placeholder="Enter name" required />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label for="from-episode" class="label">From Episode</label>
+                                                    <input id="from-episode" type="number" class="input" placeholder="1" min="1" />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label for="to-episode" class="label">To Episode</label>
+                                                    <input id="to-episode" type="number" class="input" placeholder="10" min="1" />
+                                                </div>
+                                            </div>
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div class="space-y-2">
+                                                    <label for="zip-480p" class="label">480p Zip Link</label>
+                                                    <input id="zip-480p" type="url" class="input" placeholder="480p zip download" />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label for="zip-720p" class="label">720p Zip Link</label>
+                                                    <input id="zip-720p" type="url" class="input" placeholder="720p zip download" />
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label for="zip-1080p" class="label">1080p Zip Link</label>
+                                                    <input id="zip-1080p" type="url" class="input" placeholder="1080p zip download" />
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <input type="checkbox" id="zip-ads-enabled" class="checkbox" checked />
+                                                <label for="zip-ads-enabled" class="label">Enable Ads</label>
+                                            </div>
+                                            <button type="submit" class="button button-primary">Generate Zip Link</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Links -->
+                        <div class="card mt-6">
+                            <div class="card-content p-6">
+                                <h3 class="text-lg font-semibold mb-4">Recent Links</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Movie Name</th>
+                                                <th>Short Link</th>
+                                                <th>Type</th>
+                                                <th>Views</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recent-links-table">
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted-foreground">No recent links</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Database Tab -->
+                    <div class="tabs-content hidden" id="tab-database">
+                        <div class="card">
+                            <div class="card-content p-6">
+                                <h3 class="text-lg font-semibold mb-4">Database Management</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-4">
+                                        <input type="text" id="search-links" class="input flex-1" placeholder="Search links..." />
+                                        <select id="sort-by" class="input">
+                                            <option value="date">Sort by Date</option>
+                                            <option value="name">Sort by Name</option>
+                                        </select>
+                                        <select id="sort-order" class="input">
+                                            <option value="desc">Descending</option>
+                                            <option value="asc">Ascending</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="overflow-x-auto mt-4">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Movie Name</th>
+                                                <th>Short ID</th>
+                                                <th>Views</th>
+                                                <th>Ads</th>
+                                                <th>Date Added</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="database-table">
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted-foreground">Loading...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API Tab -->
+                    <div class="tabs-content hidden" id="tab-api">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Token Management -->
+                            <div class="card">
+                                <div class="card-content p-6">
+                                    <h3 class="text-lg font-semibold mb-4">API Token Management</h3>
+                                    <form id="token-form" class="space-y-4">
+                                        <div class="space-y-2">
+                                            <label for="token-name" class="label">Token Name</label>
+                                            <input id="token-name" type="text" class="input" placeholder="Enter token name" required />
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label for="token-type" class="label">Token Type</label>
+                                            <select id="token-type" class="input" required>
+                                                <option value="single">Single Links</option>
+                                                <option value="quality">Quality Links</option>
+                                                <option value="episode">Episodes</option>
+                                                <option value="zip">Quality Zip</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="button button-primary">Generate Token</button>
+                                    </form>
+                                    
+                                    <div id="generated-token-container" class="hidden mt-4 p-4 bg-muted rounded-lg">
+                                        <div class="text-sm text-muted-foreground mb-2">Generated Token:</div>
+                                        <div class="flex items-center space-x-2">
+                                            <input id="generated-token" type="text" class="input flex-1" readonly />
+                                            <button id="copy-token" class="button button-outline">
+                                                <i data-lucide="copy" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- API Documentation -->
+                            <div class="card">
+                                <div class="card-content p-6">
+                                    <h3 class="text-lg font-semibold mb-4">API Instructions</h3>
+                                    <div class="tabs" data-tabs="api-docs">
+                                        <div class="tabs-list">
+                                            <button class="tabs-trigger active" data-tab="single-api">Single Links</button>
+                                            <button class="tabs-trigger" data-tab="quality-api">Quality Links</button>
+                                        </div>
+                                        
+                                        <div class="tabs-content active" id="tab-single-api">
+                                            <div class="space-y-3 text-sm">
+                                                <div>
+                                                    <strong>Endpoint:</strong> POST /api/create-short-link
+                                                </div>
+                                                <div>
+                                                    <strong>Headers:</strong><br>
+                                                    <code class="bg-muted p-1 rounded">Authorization: Bearer YOUR_TOKEN</code><br>
+                                                    <code class="bg-muted p-1 rounded">Content-Type: application/json</code>
+                                                </div>
+                                                <div>
+                                                    <strong>Body:</strong><br>
+                                                    <pre class="bg-muted p-2 rounded text-xs overflow-x-auto">
+{
+  "movieName": "Movie Title",
+  "originalLink": "https://download-link.com"
+}</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="tabs-content hidden" id="tab-quality-api">
+                                            <div class="space-y-3 text-sm">
+                                                <div>
+                                                    <strong>Endpoint:</strong> POST /api/create-quality-short-link
+                                                </div>
+                                                <div>
+                                                    <strong>Headers:</strong><br>
+                                                    <code class="bg-muted p-1 rounded">Authorization: Bearer YOUR_TOKEN</code><br>
+                                                    <code class="bg-muted p-1 rounded">Content-Type: application/json</code>
+                                                </div>
+                                                <div>
+                                                    <strong>Body:</strong><br>
+                                                    <pre class="bg-muted p-2 rounded text-xs overflow-x-auto">
+{
+  "movieName": "Movie Title",
+  "quality480p": "https://480p-link.com",
+  "quality720p": "https://720p-link.com",
+  "quality1080p": "https://1080p-link.com"
+}</pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Tokens -->
+                        <div class="card mt-6">
+                            <div class="card-content p-6">
+                                <h3 class="text-lg font-semibold mb-4">Active Tokens</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Type</th>
+                                                <th>Token</th>
+                                                <th>Status</th>
+                                                <th>Created</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tokens-table">
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted-foreground">No tokens found</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div class="tabs-content hidden" id="tab-settings">
+                        <div class="card">
+                            <div class="card-content p-6">
+                                <h3 class="text-lg font-semibold mb-4">Admin Settings</h3>
+                                <div class="bg-muted p-4 rounded-lg">
+                                    <h4 class="font-medium mb-2">Credential Management</h4>
+                                    <p class="text-sm text-muted-foreground">
+                                        Admin credentials are securely managed through the Supabase database. 
+                                        To update admin credentials, please access the Supabase dashboard directly.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redirect Page (hidden by default) -->
+    <div id="redirect-page" class="hidden">
+        <div class="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
+            <div class="container mx-auto px-4 py-8">
+                <!-- Header -->
+                <header class="text-center mb-8">
+                    <h1 class="text-4xl md:text-6xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                        MovieZone
+                    </h1>
+                    <p class="text-xl text-blue-200">Your Premium Movie Destination</p>
+                </header>
+
+                <!-- Main Content -->
+                <div class="max-w-4xl mx-auto">
+                    <!-- Movie Info -->
+                    <div id="movie-info" class="text-center mb-8">
+                        <h2 id="movie-title" class="text-2xl md:text-3xl font-bold mb-4">Loading...</h2>
+                        
+                        <!-- Timer -->
+                        <div id="timer-section" class="mb-6">
+                            <div class="text-xl mb-2">Please wait</div>
+                            <div id="countdown" class="text-4xl font-bold text-yellow-400">10</div>
+                            <div class="text-sm text-blue-200">seconds</div>
+                        </div>
+                    </div>
+
+                    <!-- Continue Section (hidden initially) -->
+                    <div id="continue-section" class="hidden text-center">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+                            <h3 class="text-2xl font-bold mb-4">Ready to Continue</h3>
+                            <div id="download-options">
+                                <!-- Single link option -->
+                                <div id="single-link-option" class="hidden">
+                                    <button id="continue-button" class="button button-primary button-lg">
+                                        Continue
+                                    </button>
+                                </div>
+                                
+                                <!-- Quality options -->
+                                <div id="quality-options" class="hidden space-y-3">
+                                    <h4 class="text-lg font-medium mb-3">Choose Quality:</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        <button class="quality-button" data-quality="480p">
+                                            <span class="text-lg font-bold">480p</span>
+                                            <span class="text-sm">Standard Quality</span>
+                                        </button>
+                                        <button class="quality-button" data-quality="720p">
+                                            <span class="text-lg font-bold">720p</span>
+                                            <span class="text-sm">HD Quality</span>
+                                        </button>
+                                        <button class="quality-button" data-quality="1080p">
+                                            <span class="text-lg font-bold">1080p</span>
+                                            <span class="text-sm">Full HD</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Sections -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <!-- Latest Movies -->
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                            <h3 class="text-xl font-bold mb-4 text-blue-300">🎬 Latest Movies</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="p-2 bg-white/5 rounded">Spider-Man: No Way Home (2021)</div>
+                                <div class="p-2 bg-white/5 rounded">Top Gun: Maverick (2022)</div>
+                                <div class="p-2 bg-white/5 rounded">Avatar: The Way of Water (2022)</div>
+                                <div class="p-2 bg-white/5 rounded">Black Panther: Wakanda Forever (2022)</div>
+                            </div>
+                        </div>
+
+                        <!-- Trending Series -->
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                            <h3 class="text-xl font-bold mb-4 text-purple-300">📺 Trending Series</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="p-2 bg-white/5 rounded">House of the Dragon</div>
+                                <div class="p-2 bg-white/5 rounded">The Rings of Power</div>
+                                <div class="p-2 bg-white/5 rounded">Stranger Things 4</div>
+                                <div class="p-2 bg-white/5 rounded">Wednesday</div>
+                            </div>
+                        </div>
+
+                        <!-- Popular Genres -->
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                            <h3 class="text-xl font-bold mb-4 text-green-300">🎭 Popular Genres</h3>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div class="p-2 bg-white/5 rounded text-center">Action</div>
+                                <div class="p-2 bg-white/5 rounded text-center">Comedy</div>
+                                <div class="p-2 bg-white/5 rounded text-center">Drama</div>
+                                <div class="p-2 bg-white/5 rounded text-center">Horror</div>
+                                <div class="p-2 bg-white/5 rounded text-center">Sci-Fi</div>
+                                <div class="p-2 bg-white/5 rounded text-center">Romance</div>
+                            </div>
+                        </div>
+
+                        <!-- Download Tips -->
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                            <h3 class="text-xl font-bold mb-4 text-yellow-300">💡 Download Tips</h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="p-2 bg-white/5 rounded">✓ Always use updated antivirus</div>
+                                <div class="p-2 bg-white/5 rounded">✓ Check file size before download</div>
+                                <div class="p-2 bg-white/5 rounded">✓ Use VPN for privacy</div>
+                                <div class="p-2 bg-white/5 rounded">✓ Support original creators</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 text-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <div>Loading...</div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="script.js"></script>
+</body>
 </html>

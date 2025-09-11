@@ -16,7 +16,7 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 10000
+localPort = 39367
 externalPort = 3000
 
 [workflows]
@@ -29,16 +29,19 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Start application"
+args = "HTML Server"
 
 [[workflows.workflow]]
-name = "Start application"
+name = "HTML Server"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev"
+args = "cd client && npx http-server -p 5000 -a 0.0.0.0"
 waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [agent]
 expertMode = true

@@ -1,26 +1,45 @@
+# Static HTML Build Configuration for MovieZone Admin Panel
 [build]
-  publish = "build"
-  command = "npm install && npm run build"
+  publish = "."
+  command = "echo 'Static HTML build - no build step required'"
 
 [build.environment]
   NODE_VERSION = "20"
-  NPM_VERSION = "10"
 
+# Short link routes to RedirectPage for countdown/ads UI
 [[redirects]]
   from = "/m/*"
-  to = "https://full-links.onrender.com/m/:splat"
-  status = 302
+  to = "/index.html"
+  status = 200
 
 [[redirects]]
   from = "/e/*"
-  to = "https://full-links.onrender.com/e/:splat"
-  status = 302
+  to = "/index.html"
+  status = 200
 
 [[redirects]]
   from = "/z/*"
-  to = "https://full-links.onrender.com/z/:splat"
-  status = 302
+  to = "/index.html"
+  status = 200
 
+# SPA routing for admin panel
+[[redirects]]
+  from = "/admin"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/redirect"
+  to = "/index.html"
+  status = 200
+
+# API proxy to backend server  
+[[redirects]]
+  from = "/api/*"
+  to = "https://full-links.onrender.com/api/:splat"
+  status = 200
+
+# Catch-all for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -28,9 +47,12 @@
 
 [context.production.environment]
   NODE_ENV = "production"
+  VITE_API_URL = "https://full-links.onrender.com"
 
 [context.deploy-preview.environment]
   NODE_ENV = "development"
+  VITE_API_URL = "https://full-links.onrender.com"
 
 [context.branch-deploy.environment]
   NODE_ENV = "development"
+  VITE_API_URL = "https://full-links.onrender.com"
