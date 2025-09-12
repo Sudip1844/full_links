@@ -37,7 +37,7 @@ const utils = {
         };
 
         try {
-            const response = await fetch(url, { ...defaultOptions, ...options });
+            const response = await fetch(url, { credentials: 'include', ...defaultOptions, ...options });
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

@@ -64,6 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     cookie: {
       secure: process.env.NODE_ENV === 'production', // HTTPS only in production
       httpOnly: true, // Prevent XSS
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Cross-site support in production
       maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
   }));
@@ -90,6 +91,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
+  // Auth status endpoint
+  app.get("/api/auth-status", (req, res) => {
+    try {
+      if (req.session?.isAdminLoggedIn) {
+        res.json({ authenticated: true, adminId: req.session.adminId });
+      } else {
+        res.json({ authenticated: false });
+      }
+    } catch (error) {
+      console.error('Auth status check failed:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
   // Admin login endpoint - secure server-side authentication
   app.post("/api/login", async (req, res) => {
     try {
@@ -132,28 +147,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin logout endpoint
+  // Logout endpoint
   app.post("/api/logout", (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ error: "Logout failed" });
+    try {
+      if (req.session) {
+        req.session.destroy((err) => {
+          if (err) {
+            console.error('Session destroy failed:', err);
+            res.status(500).json({ error: 'Logout failed' });
+          } else {
+            res.clearCookie('connect.sid');
+            res.json({ success: true, message: 'Logged out successfully' });
+          }
+        });
+      } else {
+        res.json({ success: true, message: 'Already logged out' });
       }
-      res.clearCookie('connect.sid');
-      res.json({ success: true, message: "Logged out successfully" });
-    });
-  });
-
-  // Check admin session status
-  app.get("/api/auth-status", (req, res) => {
-    if (req.session && req.session.isAdminLoggedIn) {
-      res.json({ 
-        authenticated: true, 
-        adminId: req.session.adminId 
-      });
-    } else {
-      res.json({ authenticated: false });
+    } catch (error) {
+      console.error('Logout failed:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
+
 
   // Update admin credentials (protected endpoint)
   app.patch("/api/admin-config", authenticateAdmin, async (req, res) => {
