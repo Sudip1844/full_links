@@ -443,6 +443,50 @@ body {
     to { transform: rotate(360deg); }
 }
 
+/* Skeleton Loading States */
+.skeleton {
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 50%, hsl(var(--muted)) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+}
+
+.dark .skeleton {
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--accent)) 50%, hsl(var(--muted)) 75%);
+    background-size: 200% 100%;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+    height: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-text.large {
+    height: 1.5rem;
+}
+
+.skeleton-text.small {
+    height: 0.75rem;
+}
+
+.skeleton-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: hsl(var(--card));
+    border-radius: var(--radius);
+    border: 1px solid hsl(var(--border));
+}
+
+.skeleton-table-row {
+    height: 3rem;
+    margin-bottom: 0.5rem;
+}
+
 /* Episode item styling */
 .episode-item {
     margin-bottom: 1rem;

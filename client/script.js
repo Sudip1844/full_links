@@ -117,6 +117,76 @@ const utils = {
 
     hideLoading: () => {
         document.getElementById('loading-overlay').classList.add('hidden');
+    },
+
+    // Skeleton loading utilities
+    createSkeletonRow: (columns = 5) => {
+        const tr = document.createElement('tr');
+        for (let i = 0; i < columns; i++) {
+            const td = document.createElement('td');
+            td.className = 'p-3';
+            const skeleton = document.createElement('div');
+            skeleton.className = 'skeleton skeleton-text';
+            td.appendChild(skeleton);
+            tr.appendChild(td);
+        }
+        return tr;
+    },
+
+    createSkeletonCard: () => {
+        const div = document.createElement('div');
+        div.className = 'skeleton-card';
+        
+        // Title skeleton
+        const titleSkeleton = document.createElement('div');
+        titleSkeleton.className = 'skeleton skeleton-text large';
+        div.appendChild(titleSkeleton);
+        
+        // Content skeletons
+        for (let i = 0; i < 3; i++) {
+            const contentSkeleton = document.createElement('div');
+            contentSkeleton.className = 'skeleton skeleton-text';
+            div.appendChild(contentSkeleton);
+        }
+        
+        return div;
+    },
+
+    showTableSkeleton: (tableId, rows = 5, columns = 5) => {
+        // First try to find element by ID directly (in case it's already a tbody)
+        let tableBody = document.getElementById(tableId);
+        
+        // If not found or not a tbody, try looking for tbody within the element
+        if (!tableBody || tableBody.tagName !== 'TBODY') {
+            tableBody = document.querySelector(`#${tableId} tbody`);
+        }
+        
+        if (!tableBody) {
+            console.warn(`Table body not found for ID: ${tableId}`);
+            return;
+        }
+        
+        tableBody.innerHTML = '';
+        for (let i = 0; i < rows; i++) {
+            tableBody.appendChild(utils.createSkeletonRow(columns));
+        }
+    },
+
+    hideTableSkeleton: (tableId) => {
+        // First try to find element by ID directly (in case it's already a tbody)
+        let tableBody = document.getElementById(tableId);
+        
+        // If not found or not a tbody, try looking for tbody within the element
+        if (!tableBody || tableBody.tagName !== 'TBODY') {
+            tableBody = document.querySelector(`#${tableId} tbody`);
+        }
+        
+        if (tableBody && tableBody.children.length > 0) {
+            // Only clear if it contains skeleton rows
+            if (tableBody.firstChild?.querySelector('.skeleton')) {
+                tableBody.innerHTML = '';
+            }
+        }
     }
 };
 
@@ -842,6 +912,9 @@ const AdminPanel = {
 
     loadDatabaseTable: async () => {
         try {
+            // Show skeleton loading
+            utils.showTableSkeleton('database-table', 5, 8);
+            
             // Fetch all types of links in parallel
             const [singleLinks, qualityLinks, episodes, zipLinks] = await Promise.all([
                 utils.apiRequest('/api/movie-links').catch(() => []),
@@ -859,6 +932,9 @@ const AdminPanel = {
             ];
 
             const tbody = document.getElementById('database-table');
+            
+            // Hide skeleton loading
+            utils.hideTableSkeleton('database-table');
             
             if (allLinks.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted-foreground">No links found</td></tr>';
@@ -978,14 +1054,21 @@ const AdminPanel = {
             lucide.createIcons();
         } catch (error) {
             console.error('Failed to load database table:', error);
+            utils.hideTableSkeleton('database-table');
             document.getElementById('database-table').innerHTML = '<tr><td colspan="8" class="text-center text-destructive">Failed to load links</td></tr>';
         }
     },
 
     loadTokens: async () => {
         try {
+            // Show skeleton loading
+            utils.showTableSkeleton('tokens-table', 3, 6);
+            
             const tokens = await utils.apiRequest('/api/tokens');
             const tbody = document.getElementById('tokens-table');
+            
+            // Hide skeleton loading
+            utils.hideTableSkeleton('tokens-table');
             
             if (tokens.length === 0) {
                 const row = document.createElement('tr');
@@ -1073,6 +1156,8 @@ const AdminPanel = {
             lucide.createIcons();
         } catch (error) {
             console.error('Failed to load tokens:', error);
+            utils.hideTableSkeleton('tokens-table');
+            document.getElementById('tokens-table').innerHTML = '<tr><td colspan="6" class="text-center text-destructive">Failed to load tokens</td></tr>';
         }
     },
 
