@@ -449,6 +449,162 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- API Usage Instructions Section -->
+                        <div class="card mt-6">
+                            <div class="card-content p-6">
+                                <h3 class="text-lg font-semibold mb-4">API Usage Instructions</h3>
+                                <div class="tabs">
+                                    <div class="tabs-list">
+                                        <button class="tabs-trigger active" data-tab="single-api">Single</button>
+                                        <button class="tabs-trigger" data-tab="quality-api">Quality</button>
+                                        <button class="tabs-trigger" data-tab="episode-api">Episode</button>
+                                        <button class="tabs-trigger" data-tab="zip-api">Zip</button>
+                                    </div>
+                                    
+                                    <div id="single-api" class="tabs-content space-y-4 text-sm">
+                                        <div>
+                                            <h4 class="font-medium mb-2">Endpoint:</h4>
+                                            <code>POST /api/create-short-link</code>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Headers:</h4>
+                                            <code>Authorization: Bearer YOUR_SINGLE_TOKEN_HERE</code>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Request Body:</h4>
+                                            <pre>{
+  "movieName": "Movie Title",
+  "originalLink": "http://original-download-link.com"
+}</pre>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Response:</h4>
+                                            <pre>{
+  "success": true,
+  "shortUrl": "https://yoursite.com/m/abc123",
+  "shortId": "abc123",
+  "movieName": "Movie Title", 
+  "originalLink": "http://original-download-link.com",
+  "adsEnabled": true
+}</pre>
+                                        </div>
+                                    </div>
+
+                                    <div id="quality-api" class="tabs-content space-y-4 text-sm hidden">
+                                        <div>
+                                            <h4 class="font-medium mb-2">Endpoint:</h4>
+                                            <code>POST /api/create-quality-short-link</code>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Headers:</h4>
+                                            <code>Authorization: Bearer YOUR_QUALITY_TOKEN_HERE</code>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Request Body:</h4>
+                                            <pre>{
+  "movieName": "Movie Title",
+  "quality480p": "http://480p-download-link.com",
+  "quality720p": "http://720p-download-link.com",
+  "quality1080p": "http://1080p-download-link.com"
+}</pre>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Response:</h4>
+                                            <pre>{
+  "success": true,
+  "shortUrl": "https://yoursite.com/m/xyz789",
+  "shortId": "xyz789",
+  "movieName": "Movie Title",
+  "qualities": {
+    "480p": "http://480p-download-link.com", 
+    "720p": "http://720p-download-link.com",
+    "1080p": "http://1080p-download-link.com"
+  },
+  "adsEnabled": true
+}</pre>
+                                        </div>
+                                    </div>
+
+                                    <div id="episode-api" class="tabs-content space-y-4 text-sm hidden">
+                                        <div>
+                                            <h4 class="font-medium mb-2">Endpoint:</h4>
+                                            <code>POST /api/create-quality-episode-link</code>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Headers:</h4>
+                                            <code>Authorization: Bearer YOUR_EPISODE_TOKEN_HERE</code>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Request Body:</h4>
+                                            <pre>{
+  "seriesName": "Series Title",
+  "startFromEpisode": 1,
+  "episodes": [
+    {
+      "episodeNumber": 1,
+      "quality480p": "http://480p-episode1-link.com",
+      "quality720p": "http://720p-episode1-link.com", 
+      "quality1080p": "http://1080p-episode1-link.com"
+    }
+  ]
+}</pre>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Response:</h4>
+                                            <pre>{
+  "success": true,
+  "shortUrl": "https://yoursite.com/e/def456",
+  "shortId": "def456",
+  "seriesName": "Series Title",
+  "startFromEpisode": 1,
+  "totalEpisodes": 2,
+  "adsEnabled": true
+}</pre>
+                                        </div>
+                                    </div>
+
+                                    <div id="zip-api" class="tabs-content space-y-4 text-sm hidden">
+                                        <div>
+                                            <h4 class="font-medium mb-2">Endpoint:</h4>
+                                            <code>POST /api/create-quality-zip-link</code>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Headers:</h4>
+                                            <code>Authorization: Bearer YOUR_ZIP_TOKEN_HERE</code>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Request Body:</h4>
+                                            <pre>{
+  "movieName": "Movie Title",
+  "fromEpisode": 1,
+  "toEpisode": 10,
+  "quality480p": "http://480p-zip-link.com",
+  "quality720p": "http://720p-zip-link.com",
+  "quality1080p": "http://1080p-zip-link.com"
+}</pre>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium mb-2">Response:</h4>
+                                            <pre>{
+  "success": true,
+  "shortUrl": "https://yoursite.com/z/ghi789",
+  "shortId": "ghi789",
+  "movieName": "Movie Title",
+  "fromEpisode": 1,
+  "toEpisode": 10,
+  "qualities": {
+    "480p": "http://480p-zip-link.com",
+    "720p": "http://720p-zip-link.com",
+    "1080p": "http://1080p-zip-link.com"
+  },
+  "adsEnabled": true
+}</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>

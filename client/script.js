@@ -248,6 +248,29 @@ const Auth = {
         // Logout button handler
         document.getElementById('logout-button').addEventListener('click', Auth.handleLogout);
         
+        // API Instructions tabs functionality
+        const apiTabTriggers = document.querySelectorAll('[data-tab]');
+        const apiTabContents = document.querySelectorAll('.tabs-content');
+        
+        apiTabTriggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const targetTab = trigger.getAttribute('data-tab');
+                
+                // Remove active class from all triggers
+                apiTabTriggers.forEach(t => t.classList.remove('active'));
+                // Add active class to clicked trigger
+                trigger.classList.add('active');
+                
+                // Hide all tab contents
+                apiTabContents.forEach(content => content.classList.add('hidden'));
+                // Show target tab content
+                const targetContent = document.getElementById(targetTab);
+                if (targetContent) {
+                    targetContent.classList.remove('hidden');
+                }
+            });
+        });
+        
         // Always start with login page visible
         Auth.showLoginPage();
     },
