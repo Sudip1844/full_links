@@ -1,5 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+import session from "express-session";
+import MemoryStore from "memorystore";
 import { storage } from "./storage.js";
 import { insertMovieLinkSchema, createShortLinkSchema, insertQualityMovieLinkSchema, createQualityShortLinkSchema, insertQualityEpisodeSchema, createQualityEpisodeSchema, insertQualityZipSchema, createQualityZipSchema } from "./shared/schema.js";
 import { z } from "zod";
@@ -35,6 +37,14 @@ async function authenticateToken(req: Request, res: Response, next: NextFunction
   }
 }
 
+// Admin authentication middleware for admin panel endpoints
+async function authenticateAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.session || !req.session.isAdminLoggedIn) {
+    return res.status(401).json({ error: "Admin authentication required" });
+  }
+  next();
+}
+
 // Utility function to generate short IDs
 function generateShortId(): string {
   return crypto.randomBytes(3).toString('hex');
@@ -42,13 +52,29 @@ function generateShortId(): string {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Set up session middleware with secure configuration
+  const MemStore = MemoryStore(session);
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'moviezone-super-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    store: new MemStore({
+      checkPeriod: 86400000 // Prune expired entries every 24h
+    }),
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      httpOnly: true, // Prevent XSS
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+
   // Root route - basic health check
   app.get("/", (req, res) => {
     res.json({
       message: "MovieZone Server is running!",
       status: "active",
       endpoints: {
-        admin_config: "/api/admin-config",
+        login: "/api/login",
         movie_links: "/api/movie-links",
         quality_movie_links: "/api/quality-movie-links",
         quality_episodes: "/api/quality-episodes",
@@ -64,37 +90,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
-  // Admin configuration endpoint - get from Supabase ONLY
-  app.get("/api/admin-config", async (req, res) => {
+  // Admin login endpoint - secure server-side authentication
+  app.post("/api/login", async (req, res) => {
     try {
+      const { adminId, adminPassword } = req.body;
+      
+      if (!adminId || !adminPassword) {
+        return res.status(400).json({ error: "Admin ID and password are required" });
+      }
+      
+      // Get admin settings from database (server-side only)
       const adminSettings = await storage.getAdminSettings();
       
       if (!adminSettings) {
         console.log('No admin settings found');
-        return res.status(404).json({ 
-          error: "Admin settings not found in database. Please check Supabase admin_settings table." 
+        return res.status(500).json({ 
+          error: "Admin configuration not found" 
         });
       }
       
-      console.log('Admin settings found:', adminSettings);
-      // Handle both snake_case (Supabase) and camelCase field names
-      const response = {
-        adminId: (adminSettings as any).admin_id || (adminSettings as any).adminId,
-        adminPassword: (adminSettings as any).admin_password || (adminSettings as any).adminPassword
-      };
-      console.log('Sending response:', response);
+      // Verify credentials server-side
+      const storedAdminId = (adminSettings as any).admin_id || (adminSettings as any).adminId;
+      const storedPassword = (adminSettings as any).admin_password || (adminSettings as any).adminPassword;
       
-      res.json(response);
+      if (adminId === storedAdminId && adminPassword === storedPassword) {
+        // Set session
+        req.session.isAdminLoggedIn = true;
+        req.session.adminId = adminId;
+        
+        res.json({ 
+          success: true, 
+          message: "Login successful",
+          adminId: adminId // Only return ID, never password
+        });
+      } else {
+        res.status(401).json({ error: "Invalid credentials" });
+      }
     } catch (error) {
-      console.error("Error fetching admin config:", error);
-      res.status(500).json({ 
-        error: "Failed to fetch admin configuration from database" 
-      });
+      console.error("Error during login:", error);
+      res.status(500).json({ error: "Login failed" });
     }
   });
 
-  // Update admin credentials
-  app.patch("/api/admin-config", async (req, res) => {
+  // Admin logout endpoint
+  app.post("/api/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Logout failed" });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ success: true, message: "Logged out successfully" });
+    });
+  });
+
+  // Check admin session status
+  app.get("/api/auth-status", (req, res) => {
+    if (req.session && req.session.isAdminLoggedIn) {
+      res.json({ 
+        authenticated: true, 
+        adminId: req.session.adminId 
+      });
+    } else {
+      res.json({ authenticated: false });
+    }
+  });
+
+  // Update admin credentials (protected endpoint)
+  app.patch("/api/admin-config", authenticateAdmin, async (req, res) => {
     try {
       const { adminId, adminPassword } = req.body;
       
@@ -105,7 +167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updatedSettings = await storage.updateAdminCredentials(adminId, adminPassword);
       res.json({
         adminId: updatedSettings.adminId,
-        adminPassword: updatedSettings.adminPassword,
+        // Never return password in response
         updatedAt: updatedSettings.updatedAt
       });
     } catch (error) {
@@ -231,7 +293,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Movie Links API routes (admin panel)
   
   // Get all movie links
-  app.get("/api/movie-links", async (req, res) => {
+  app.get("/api/movie-links", authenticateAdmin, async (req, res) => {
     try {
       const links = await storage.getMovieLinks();
       res.json(links);
@@ -241,7 +303,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a new movie link
-  app.post("/api/movie-links", async (req, res) => {
+  app.post("/api/movie-links", authenticateAdmin, async (req, res) => {
     try {
       const result = insertMovieLinkSchema.safeParse(req.body);
       if (!result.success) {
@@ -283,7 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update movie link original URL and/or ads enabled status
-  app.patch("/api/movie-links/:id", async (req, res) => {
+  app.patch("/api/movie-links/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -313,7 +375,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // Delete a movie link
-  app.delete("/api/movie-links/:id", async (req, res) => {
+  app.delete("/api/movie-links/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -328,7 +390,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // API Token management routes (admin only)
-  app.get("/api/tokens", async (req, res) => {
+  app.get("/api/tokens", authenticateAdmin, async (req, res) => {
     try {
       const tokens = await storage.getApiTokens();
       res.json(tokens);
@@ -337,7 +399,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/tokens", async (req, res) => {
+  app.post("/api/tokens", authenticateAdmin, async (req, res) => {
     try {
       const { tokenName, tokenType } = req.body;
       
@@ -367,7 +429,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update API token status
-  app.patch("/api/tokens/:id", async (req, res) => {
+  app.patch("/api/tokens/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -387,7 +449,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/tokens/:id", async (req, res) => {
+  app.delete("/api/tokens/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -405,7 +467,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Quality Movie Links API routes (admin panel)
   
   // Get all quality movie links
-  app.get("/api/quality-movie-links", async (req, res) => {
+  app.get("/api/quality-movie-links", authenticateAdmin, async (req, res) => {
     try {
       const links = await storage.getQualityMovieLinks();
       res.json(links);
@@ -415,7 +477,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a new quality movie link
-  app.post("/api/quality-movie-links", async (req, res) => {
+  app.post("/api/quality-movie-links", authenticateAdmin, async (req, res) => {
     try {
       const result = insertQualityMovieLinkSchema.safeParse(req.body);
       if (!result.success) {
@@ -457,7 +519,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update quality movie link
-  app.patch("/api/quality-movie-links/:id", async (req, res) => {
+  app.patch("/api/quality-movie-links/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -473,7 +535,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete a quality movie link
-  app.delete("/api/quality-movie-links/:id", async (req, res) => {
+  app.delete("/api/quality-movie-links/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -547,7 +609,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all quality episodes
-  app.get("/api/quality-episodes", async (req, res) => {
+  app.get("/api/quality-episodes", authenticateAdmin, async (req, res) => {
     try {
       const episodes = await storage.getQualityEpisodes();
       res.json(episodes);
@@ -557,7 +619,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a new quality episode series (Admin Panel)
-  app.post("/api/quality-episodes", async (req, res) => {
+  app.post("/api/quality-episodes", authenticateAdmin, async (req, res) => {
     try {
       const result = insertQualityEpisodeSchema.safeParse(req.body);
       if (!result.success) {
@@ -599,7 +661,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update quality episode series
-  app.patch("/api/quality-episodes/:id", async (req, res) => {
+  app.patch("/api/quality-episodes/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -615,7 +677,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete a quality episode series
-  app.delete("/api/quality-episodes/:id", async (req, res) => {
+  app.delete("/api/quality-episodes/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -693,7 +755,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all quality zips
-  app.get("/api/quality-zips", async (req, res) => {
+  app.get("/api/quality-zips", authenticateAdmin, async (req, res) => {
     try {
       const zips = await storage.getQualityZips();
       res.json(zips);
@@ -703,7 +765,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a new quality zip (Admin Panel)
-  app.post("/api/quality-zips", async (req, res) => {
+  app.post("/api/quality-zips", authenticateAdmin, async (req, res) => {
     try {
       const result = insertQualityZipSchema.safeParse(req.body);
       if (!result.success) {
@@ -745,7 +807,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update quality zip
-  app.patch("/api/quality-zips/:id", async (req, res) => {
+  app.patch("/api/quality-zips/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -761,7 +823,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete a quality zip
-  app.delete("/api/quality-zips/:id", async (req, res) => {
+  app.delete("/api/quality-zips/:id", authenticateAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
