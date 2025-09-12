@@ -6,8 +6,6 @@ const AppState = {
     isLoggedIn: false,
     currentUser: null,
     apiBaseUrl: '', // Will be set from environment or default
-    adminCredentials: { id: '', password: '' },
-    credentialsLoaded: false,
     movieData: null,
     countdown: 10,
     showContinueSection: false
@@ -235,8 +233,14 @@ const Auth = {
         // Set API base URL
         Auth.setApiBaseUrl();
         
-        // Fetch admin credentials on page load
-        Auth.fetchCredentials();
+        // Check authentication status on page load
+        Auth.checkAuthStatus().then(isAuthenticated => {
+            if (isAuthenticated) {
+                Auth.showAdminPanel();
+            } else {
+                Auth.showLoginPage();
+            }
+        });
 
         // Login form handler
         document.getElementById('login-form').addEventListener('submit', Auth.handleLogin);
@@ -260,22 +264,25 @@ const Auth = {
         }
     },
 
-    fetchCredentials: async () => {
+    // Check authentication status with server
+    checkAuthStatus: async () => {
         try {
-            const response = await utils.apiRequest('/api/admin-config');
+            const response = await utils.apiRequest('/api/auth-status');
             
-            if (response.adminId && response.adminPassword) {
-                AppState.adminCredentials.id = response.adminId;
-                AppState.adminCredentials.password = response.adminPassword;
-                AppState.credentialsLoaded = true;
-                console.log('Admin credentials loaded successfully');
+            if (response && response.authenticated) {
+                AppState.isLoggedIn = true;
+                AppState.currentUser = response.adminId;
+                return true;
             } else {
-                throw new Error('Invalid credentials response');
+                AppState.isLoggedIn = false;
+                AppState.currentUser = null;
+                return false;
             }
         } catch (error) {
-            console.error('Failed to load admin credentials:', error);
-            AppState.credentialsLoaded = false;
-            utils.showToast('Configuration Error', 'Failed to load admin configuration. Please try again.', 'destructive');
+            console.error('Error checking auth status:', error);
+            AppState.isLoggedIn = false;
+            AppState.currentUser = null;
+            return false;
         }
     },
 
@@ -291,47 +298,57 @@ const Auth = {
             return;
         }
 
-        if (!AppState.credentialsLoaded) {
-            utils.showToast('Please wait', 'Loading admin configuration...', 'default');
-            // Try to fetch credentials again
-            await Auth.fetchCredentials();
-            if (!AppState.credentialsLoaded) {
-                return;
-            }
-        }
-
         const loginButton = document.getElementById('login-button');
         loginButton.textContent = 'Logging in...';
         loginButton.disabled = true;
 
         try {
-            // Simulate delay for better UX
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Send credentials to server for verification
+            const response = await utils.apiRequest('/api/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    adminId: adminId,
+                    adminPassword: password
+                })
+            });
 
-            // Validate credentials
-            if (adminId === AppState.adminCredentials.id && password === AppState.adminCredentials.password) {
+            if (response && response.success) {
                 AppState.isLoggedIn = true;
-                localStorage.setItem('moviezone_admin_logged_in', 'true');
-                utils.showToast('Login Successful', 'Welcome to MovieZone Admin Panel', 'success');
+                AppState.currentUser = response.adminId;
+                utils.showToast('Login Successful', response.message || 'Welcome to MovieZone Admin Panel', 'success');
                 Auth.showAdminPanel();
             } else {
-                utils.showToast('Login Failed', 'Invalid credentials. Please try again.', 'destructive');
+                utils.showToast('Login Failed', response?.error || 'Invalid credentials. Please try again.', 'destructive');
                 // Clear the form
                 document.getElementById('admin-id').value = '';
                 document.getElementById('password').value = '';
             }
         } catch (error) {
             console.error('Login error:', error);
-            utils.showToast('Login Error', 'An error occurred during login. Please try again.', 'destructive');
+            utils.showToast('Login Error', error.message || 'An error occurred during login. Please try again.', 'destructive');
+            // Clear the form on error
+            document.getElementById('admin-id').value = '';
+            document.getElementById('password').value = '';
         } finally {
             loginButton.textContent = 'Login';
             loginButton.disabled = false;
         }
     },
 
-    handleLogout: () => {
-        localStorage.removeItem('moviezone_admin_logged_in');
+    handleLogout: async () => {
+        try {
+            // Call server logout endpoint
+            await utils.apiRequest('/api/logout', {
+                method: 'POST'
+            });
+        } catch (error) {
+            console.error('Logout API error:', error);
+            // Continue with client-side logout even if server call fails
+        }
+
+        // Clear client state
         AppState.isLoggedIn = false;
+        AppState.currentUser = null;
         
         // Show login page, hide admin panel
         document.getElementById('login-page').classList.remove('hidden');
