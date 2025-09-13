@@ -40,33 +40,44 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Serve static files from client directory for Replit development first
-  if (process.env.NODE_ENV === 'development') {
-    const path = await import('path');
-    const url = await import('url');
-    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-    const clientPath = path.join(__dirname, '..', 'client');
-    
-    console.log(`Serving static files from: ${clientPath}`);
-    app.use(express.static(clientPath));
-  }
-  
   const server = await registerRoutes(app);
 
-  // SPA Fallback - serve index.html for non-API routes (must be after API routes)
-  if (process.env.NODE_ENV === 'development') {
-    const path = await import('path');
-    const url = await import('url');
-    const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-    const clientPath = path.join(__dirname, '..', 'client');
-    
-    app.get('*', (req, res, next) => {
-      if (req.path.startsWith('/api/')) {
-        return next();
-      }
-      res.sendFile(path.join(clientPath, 'index.html'));
+  // API Status endpoint for Replit preview (no client files served)
+  app.get('/', (req, res) => {
+    res.json({
+      status: 'Server Running',
+      message: 'MovieZone API Server is active',
+      timestamp: new Date().toISOString(),
+      endpoints: [
+        'GET /api/auth-status',
+        'POST /api/login',
+        'POST /api/logout', 
+        'GET /api/movie-links',
+        'POST /api/movie-links',
+        'GET /api/quality-movie-links',
+        'POST /api/quality-movie-links',
+        'GET /api/quality-episodes',
+        'POST /api/quality-episodes',
+        'GET /api/quality-zips',
+        'POST /api/quality-zips',
+        'GET /api/tokens',
+        'POST /api/tokens'
+      ],
+      note: 'Client is hosted on Netlify, not on Replit'
     });
-  }
+  });
+
+  // Catch-all for non-API routes
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
+    res.status(404).json({
+      error: 'Client not served from this server',
+      message: 'Please visit the Netlify hosted client',
+      apiStatus: 'Available'
+    });
+  });
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
