@@ -31,6 +31,30 @@ MovieZone's architecture is split into a static frontend and an Express.js backe
     - **Routing**: Wouter is used for client-side routing in the admin panel, while server-side Express routes handle short URL redirection (`/m/:shortId`, `/e/:shortId`, `/z/:shortId`).
     - **API Design**: Comprehensive RESTful API endpoints for CRUD operations on movie links, quality links, episodes, API tokens, and admin settings.
 
+## **⚠️ CRITICAL HOSTING CONFIGURATION ⚠️**
+
+**🚨 WARNING: DO NOT HOST CLIENT ON REPLIT PREVIEW 🚨**
+
+### **Production Hosting Setup:**
+- **Client (Frontend)**: Must be hosted on **Netlify** only
+- **Server (Backend)**: Must be hosted on **Render** only  
+- **Development**: Use Replit only for code editing and git operations
+
+### **Why Replit Preview Causes Issues:**
+1. **CORS Problems**: Server is configured only for Netlify origin, dual hosting breaks CORS
+2. **API Failures**: Dual origin hosting causes authentication and API call failures
+3. **Tab Switching Issues**: Content disappears due to cross-origin conflicts
+4. **Form Submission Failures**: All 4 link generators fail due to CORS blocks
+5. **Data Loading Issues**: Recent links, statistics, and database tables fail to load
+
+### **Proper Development Workflow:**
+1. Edit code in Replit (DO NOT use preview)
+2. Git push manually from Replit to update both hosts  
+3. Test on Netlify production URL only
+4. Never rely on Replit preview for functional testing
+
+**📝 Note:** This configuration prevents CORS issues and ensures all features work correctly.
+
 ## External Dependencies
 - **PostgreSQL (via Supabase)**: Primary database for all persistent data storage.
 - **Express.js**: Web application framework for the backend.
