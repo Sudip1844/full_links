@@ -502,6 +502,10 @@ const AdminPanel = {
         }
     },
 
+    // Initialize sort variables
+    currentSortBy: 'date',
+    currentSortOrder: 'desc',
+
     loadStatistics: async () => {
         try {
             const stats = await utils.apiRequest('/api/movie-links/stats');
@@ -668,8 +672,11 @@ const AdminPanel = {
 
         // Database search and sort
         document.getElementById('search-links').addEventListener('input', AdminPanel.handleDatabaseSearch);
-        document.getElementById('sort-by').addEventListener('change', AdminPanel.handleDatabaseSort);
-        document.getElementById('sort-order').addEventListener('change', AdminPanel.handleDatabaseSort);
+        
+        // Sort button handlers
+        document.getElementById('sort-name').addEventListener('click', () => AdminPanel.handleSortButton('name'));
+        document.getElementById('sort-date').addEventListener('click', () => AdminPanel.handleSortButton('date'));
+        document.getElementById('sort-order-toggle').addEventListener('click', AdminPanel.handleSortOrderToggle);
     },
 
     handleSingleLinkSubmit: async (e) => {
@@ -1275,14 +1282,45 @@ const AdminPanel = {
         AdminPanel.renderFilteredLinks();
     },
 
+    handleSortButton: (sortType) => {
+        // Update active button states
+        document.getElementById('sort-name').classList.remove('button-primary');
+        document.getElementById('sort-name').classList.add('button-outline');
+        document.getElementById('sort-date').classList.remove('button-primary');
+        document.getElementById('sort-date').classList.add('button-outline');
+        
+        // Set active button
+        const activeButton = document.getElementById(`sort-${sortType}`);
+        activeButton.classList.remove('button-outline');
+        activeButton.classList.add('button-primary');
+        
+        // Store current sort type
+        AdminPanel.currentSortBy = sortType;
+        AdminPanel.renderFilteredLinks();
+    },
+    
+    handleSortOrderToggle: () => {
+        const toggleButton = document.getElementById('sort-order-toggle');
+        const currentOrder = toggleButton.getAttribute('data-order');
+        const newOrder = currentOrder === 'desc' ? 'asc' : 'desc';
+        
+        // Update button
+        toggleButton.setAttribute('data-order', newOrder);
+        toggleButton.textContent = newOrder === 'desc' ? '↓' : '↑';
+        
+        // Store current sort order
+        AdminPanel.currentSortOrder = newOrder;
+        AdminPanel.renderFilteredLinks();
+    },
+    
     handleDatabaseSort: () => {
         AdminPanel.renderFilteredLinks();
     },
 
     renderFilteredLinks: () => {
         const searchTerm = document.getElementById('search-links').value.toLowerCase();
-        const sortBy = document.getElementById('sort-by').value;
-        const sortOrder = document.getElementById('sort-order').value;
+        const sortBy = AdminPanel.currentSortBy || 'date';
+        const sortOrder = AdminPanel.currentSortOrder || 'desc';
 
         let filteredLinks = AdminPanel.allLinksData.filter(link => {
             const movieName = (link.movieName || link.movie_name || '').toLowerCase();
