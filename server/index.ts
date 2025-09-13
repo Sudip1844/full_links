@@ -23,7 +23,7 @@ app.use(cors({
     'http://localhost:5000', // For local development
     /^https:\/\/.*\.replit\.app$/, // Allow all Replit app domains
     /^https:\/\/.*\.replit\.dev$/, // Allow all Replit dev domains
-    process.env.CLIENT_URL || '*'
+    ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : [])
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -33,21 +33,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Request logging middleware (simplified)
 app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    // Minimal logging - removed verbose API request logging
-  });
-
+  log(`${req.method} ${req.path}`);
   next();
 });
 
@@ -84,8 +72,9 @@ app.use((req, res, next) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
+    log(`Error ${status}: ${message}`, "error");
     res.status(status).json({ message });
-    throw err;
+    // Don't throw after sending response to prevent server crashes
   });
 
   // For Render deployment, use process.env.PORT. For development, use 5000
