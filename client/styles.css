@@ -1041,8 +1041,9 @@ header {
 }
 
 .toast.success {
-    border-color: hsl(var(--success));
-    background-color: hsl(var(--success) / 0.1);
+    border-color: hsl(142 76% 36%);
+    background-color: hsl(142 76% 36%);
+    color: white;
 }
 
 .toast.error {
