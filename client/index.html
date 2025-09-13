@@ -69,9 +69,9 @@
                 <!-- Tabs -->
                 <div class="tabs" data-tabs="admin-tabs">
                     <div class="tabs-list">
-                        <button class="tabs-trigger active" data-tab="home">Home</button>
-                        <button class="tabs-trigger" data-tab="database">Database</button>
-                        <button class="tabs-trigger" data-tab="api">API</button>
+                        <button class="tabs-trigger home-tab active" data-tab="home">Home</button>
+                        <button class="tabs-trigger database-tab" data-tab="database">Database</button>
+                        <button class="tabs-trigger api-tab" data-tab="api">API Tokens</button>
                     </div>
 
                     <!-- Home Tab -->
@@ -80,26 +80,26 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                             <div class="card">
                                 <div class="card-content p-4">
+                                    <div class="text-2xl font-bold text-primary" id="total-links">0</div>
                                     <div class="text-sm text-muted-foreground">Total Links</div>
-                                    <div class="text-2xl font-bold" id="total-links">0</div>
                                 </div>
                             </div>
                             <div class="card">
                                 <div class="card-content p-4">
+                                    <div class="text-2xl font-bold text-primary" id="today-links">0</div>
                                     <div class="text-sm text-muted-foreground">Today's Links</div>
-                                    <div class="text-2xl font-bold" id="today-links">0</div>
                                 </div>
                             </div>
                             <div class="card">
                                 <div class="card-content p-4">
+                                    <div class="text-2xl font-bold text-primary" id="total-views">0</div>
                                     <div class="text-sm text-muted-foreground">Total Views</div>
-                                    <div class="text-2xl font-bold" id="total-views">0</div>
                                 </div>
                             </div>
                             <div class="card">
                                 <div class="card-content p-4">
+                                    <div class="text-2xl font-bold text-primary" id="today-views">0</div>
                                     <div class="text-sm text-muted-foreground">Today's Views</div>
-                                    <div class="text-2xl font-bold" id="today-views">0</div>
                                 </div>
                             </div>
                         </div>
@@ -107,10 +107,10 @@
                         <!-- Link Creation Tabs -->
                         <div class="tabs" data-tabs="link-creation">
                             <div class="tabs-list">
-                                <button class="tabs-trigger active" data-tab="single">Single Link</button>
-                                <button class="tabs-trigger" data-tab="quality">Quality Links</button>
-                                <button class="tabs-trigger" data-tab="episodes">Episodes</button>
-                                <button class="tabs-trigger" data-tab="zip">Quality Zip</button>
+                                <button class="tabs-trigger single-tab active" data-tab="single">Single</button>
+                                <button class="tabs-trigger quality-tab" data-tab="quality">Quality</button>
+                                <button class="tabs-trigger episode-tab" data-tab="episodes">Ep Quality</button>
+                                <button class="tabs-trigger zip-tab" data-tab="zip">Ep Zip</button>
                             </div>
 
                             <!-- Single Link Tab -->
@@ -265,23 +265,10 @@
                         <div class="card mt-6">
                             <div class="card-content p-6">
                                 <h3 class="text-lg font-semibold mb-4">Recent Links</h3>
-                                <div class="overflow-x-auto">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Movie Name</th>
-                                                <th>Short Link</th>
-                                                <th>Type</th>
-                                                <th>Views</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="recent-links-table">
-                                            <tr>
-                                                <td colspan="5" class="text-center text-muted-foreground">No recent links</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div id="recent-links-container" class="space-y-3">
+                                    <div class="text-center text-muted-foreground py-8">
+                                        No recent links
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -293,16 +280,21 @@
                             <div class="card-content p-6">
                                 <h3 class="text-lg font-semibold mb-4">Database Management</h3>
                                 <div class="space-y-4">
-                                    <div class="flex items-center space-x-4">
-                                        <input type="text" id="search-links" class="input flex-1" placeholder="Search links..." />
-                                        <select id="sort-by" class="input">
-                                            <option value="date">Sort by Date</option>
-                                            <option value="name">Sort by Name</option>
-                                        </select>
-                                        <select id="sort-order" class="input">
-                                            <option value="desc">Descending</option>
-                                            <option value="asc">Ascending</option>
-                                        </select>
+                                    <div class="flex flex-col sm:flex-row gap-4">
+                                        <div class="flex-1">
+                                            <input type="text" id="search-links" class="input" placeholder="Search by movie name..." />
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button id="sort-name" class="button button-outline" data-sort="name">
+                                                Name
+                                            </button>
+                                            <button id="sort-date" class="button button-primary" data-sort="date">
+                                                Date
+                                            </button>
+                                            <button id="sort-order-toggle" class="button button-outline" data-order="desc">
+                                                ↓
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="overflow-x-auto mt-4">

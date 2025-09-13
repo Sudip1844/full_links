@@ -518,44 +518,51 @@ const AdminPanel = {
     loadRecentLinks: async () => {
         try {
             const links = await utils.apiRequest('/api/movie-links?limit=5');
-            const tbody = document.getElementById('recent-links-table');
+            const container = document.getElementById('recent-links-container');
             
             if (links.length === 0) {
-                const row = document.createElement('tr');
-                const cell = document.createElement('td');
-                cell.colSpan = 5;
-                cell.className = 'text-center text-muted-foreground';
-                cell.textContent = 'No recent links';
-                row.appendChild(cell);
-                tbody.innerHTML = '';
-                tbody.appendChild(row);
+                container.innerHTML = '<div class="text-center text-muted-foreground py-8">No recent links</div>';
                 return;
             }
 
-            // Clear existing content safely
-            tbody.innerHTML = '';
+            // Clear existing content
+            container.innerHTML = '';
 
-            // Create rows safely using DOM methods
+            // Create cards for each link
             links.forEach(link => {
                 // Store link data safely
                 CRUDOperations.storeLinkData(link.id, link);
 
-                const row = document.createElement('tr');
+                const card = document.createElement('div');
+                card.className = 'recent-link-card';
 
-                // Movie name cell (safe with textContent)
-                const nameCell = document.createElement('td');
-                nameCell.textContent = link.movieName || '';
-                row.appendChild(nameCell);
+                // Create card content
+                const cardContent = document.createElement('div');
+                cardContent.className = 'flex items-center justify-between gap-4';
 
-                // Short URL cell with copy button
-                const urlCell = document.createElement('td');
-                const urlDiv = document.createElement('div');
-                urlDiv.className = 'flex items-center space-x-2';
+                // Left side: Movie name and badge
+                const leftSide = document.createElement('div');
+                leftSide.className = 'flex items-center gap-3 min-w-0 flex-1';
 
-                const code = document.createElement('code');
-                code.className = 'text-xs';
+                const movieName = document.createElement('div');
+                movieName.className = 'font-medium truncate';
+                movieName.textContent = link.movieName || '';
+
+                const typeBadge = document.createElement('span');
+                typeBadge.className = 'badge badge-single';
+                typeBadge.textContent = 'Single';
+
+                leftSide.appendChild(movieName);
+                leftSide.appendChild(typeBadge);
+
+                // Middle: Short URL with copy button
+                const middleSection = document.createElement('div');
+                middleSection.className = 'flex items-center gap-2 min-w-0';
+
                 const shortUrl = `${window.location.origin}/m/${link.shortId}`;
-                code.textContent = shortUrl;
+                const urlDisplay = document.createElement('code');
+                urlDisplay.className = 'text-xs text-muted-foreground truncate';
+                urlDisplay.textContent = shortUrl;
 
                 const copyBtn = document.createElement('button');
                 copyBtn.className = 'button button-outline';
@@ -564,43 +571,45 @@ const AdminPanel = {
                 copyBtn.setAttribute('data-url', shortUrl);
                 copyBtn.innerHTML = '<i data-lucide="copy" style="width: 0.75rem; height: 0.75rem;"></i>';
 
-                urlDiv.appendChild(code);
-                urlDiv.appendChild(copyBtn);
-                urlCell.appendChild(urlDiv);
-                row.appendChild(urlCell);
+                middleSection.appendChild(urlDisplay);
+                middleSection.appendChild(copyBtn);
 
-                // Type cell
-                const typeCell = document.createElement('td');
-                const typeBadge = document.createElement('span');
-                typeBadge.className = 'badge badge-primary';
-                typeBadge.textContent = 'Single';
-                typeCell.appendChild(typeBadge);
-                row.appendChild(typeCell);
+                // Right side: Views and actions
+                const rightSide = document.createElement('div');
+                rightSide.className = 'flex items-center gap-3';
 
-                // Views cell
-                const viewsCell = document.createElement('td');
-                viewsCell.textContent = link.views || 0;
-                row.appendChild(viewsCell);
+                const viewsDisplay = document.createElement('div');
+                viewsDisplay.className = 'text-sm text-muted-foreground';
+                viewsDisplay.textContent = `${link.views || 0} views`;
 
-                // Actions cell
-                const actionsCell = document.createElement('td');
                 const editBtn = document.createElement('button');
                 editBtn.className = 'button button-outline';
-                editBtn.style.padding = '0.25rem 0.5rem';
+                editBtn.style.padding = '0.25rem';
                 editBtn.setAttribute('data-action', 'edit');
                 editBtn.setAttribute('data-link-id', link.id);
                 editBtn.setAttribute('data-link-type', 'single');
                 editBtn.innerHTML = '<i data-lucide="edit" style="width: 0.75rem; height: 0.75rem;"></i>';
-                actionsCell.appendChild(editBtn);
-                row.appendChild(actionsCell);
 
-                tbody.appendChild(row);
+                rightSide.appendChild(viewsDisplay);
+                rightSide.appendChild(editBtn);
+
+                // Assemble card
+                cardContent.appendChild(leftSide);
+                cardContent.appendChild(middleSection);
+                cardContent.appendChild(rightSide);
+                card.appendChild(cardContent);
+
+                container.appendChild(card);
             });
 
             // Re-initialize lucide icons
             lucide.createIcons();
         } catch (error) {
             console.error('Failed to load recent links:', error);
+            const container = document.getElementById('recent-links-container');
+            if (container) {
+                container.innerHTML = '<div class="text-center text-muted-foreground py-8">Failed to load recent links</div>';
+            }
         }
     },
 
