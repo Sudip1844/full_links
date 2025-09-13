@@ -43,7 +43,21 @@ const utils = {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
-            return await response.json();
+            // Get response text first
+            const responseText = await response.text();
+            
+            // Check if response is empty
+            if (!responseText) {
+                return [];
+            }
+            
+            // Try to parse as JSON
+            try {
+                return JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('JSON parse error:', parseError, 'Response:', responseText);
+                return [];
+            }
         } catch (error) {
             console.error('API request failed:', error);
             throw error;
@@ -224,6 +238,16 @@ const TabManager = {
             activeContent.classList.remove('hidden');
             activeContent.classList.add('active');
         }
+        
+        // Load data for specific tabs
+        if (activeTabId === 'database') {
+            AdminPanel.loadDatabaseTable();
+        } else if (activeTabId === 'api') {
+            AdminPanel.loadTokens();
+        } else if (activeTabId === 'home') {
+            AdminPanel.loadRecentLinks();
+            AdminPanel.loadStatistics();
+        }
     }
 };
 
@@ -248,28 +272,7 @@ const Auth = {
         // Logout button handler
         document.getElementById('logout-button').addEventListener('click', Auth.handleLogout);
         
-        // API Instructions tabs functionality
-        const apiTabTriggers = document.querySelectorAll('[data-tab]');
-        const apiTabContents = document.querySelectorAll('.tabs-content');
-        
-        apiTabTriggers.forEach(trigger => {
-            trigger.addEventListener('click', () => {
-                const targetTab = trigger.getAttribute('data-tab');
-                
-                // Remove active class from all triggers
-                apiTabTriggers.forEach(t => t.classList.remove('active'));
-                // Add active class to clicked trigger
-                trigger.classList.add('active');
-                
-                // Hide all tab contents
-                apiTabContents.forEach(content => content.classList.add('hidden'));
-                // Show target tab content
-                const targetContent = document.getElementById(targetTab);
-                if (targetContent) {
-                    targetContent.classList.remove('hidden');
-                }
-            });
-        });
+        // Note: Tab functionality now handled by TabManager.init()
         
         // Always start with login page visible
         Auth.showLoginPage();
@@ -413,6 +416,9 @@ const Auth = {
         
         // Load admin panel data
         AdminPanel.init();
+        
+        // Initialize tab system after admin panel
+        TabManager.init();
     }
 };
 
@@ -435,10 +441,10 @@ const AdminPanel = {
             databaseTable.addEventListener('click', AdminPanel.handleTableButtonClick);
         }
 
-        // Add click handler to recent links table
-        const recentLinksTable = document.querySelector('#recent-links-table');
-        if (recentLinksTable) {
-            recentLinksTable.addEventListener('click', AdminPanel.handleTableButtonClick);
+        // Add click handler to recent links container
+        const recentLinksContainer = document.querySelector('#recent-links-container');
+        if (recentLinksContainer) {
+            recentLinksContainer.addEventListener('click', AdminPanel.handleTableButtonClick);
         }
 
         // Add click handler to tokens table
