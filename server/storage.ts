@@ -1,4 +1,5 @@
 import { movieLinks, apiTokens, adminSettings, qualityMovieLinks, qualityEpisodes, qualityZips, adViewSessions, type MovieLink, type InsertMovieLink, type ApiToken, type InsertApiToken, type AdminSettings, type InsertAdminSettings, type QualityMovieLink, type InsertQualityMovieLink, type QualityEpisode, type InsertQualityEpisode, type QualityZip, type InsertQualityZip, type AdViewSession, type InsertAdViewSession } from "@shared/schema";
+import { eq, and, sql } from "drizzle-orm";
 
 // Storage interface for movie links and API tokens
 export interface IStorage {
@@ -857,5 +858,308 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-// Use only Supabase DatabaseStorage - no memory storage needed
-export const storage = new DatabaseStorage();
+// DrizzleStorage implementation using direct database connection
+export class DrizzleStorage implements IStorage {
+  private db: any;
+
+  constructor() {
+    this.initDb();
+  }
+
+  private async initDb() {
+    const { db } = await import('./db');
+    this.db = db;
+  }
+
+  private async ensureDb() {
+    if (!this.db) {
+      const { db } = await import('./db');
+      this.db = db;
+    }
+    return this.db;
+  }
+
+  // Movie Links methods
+  async createMovieLink(insertMovieLink: InsertMovieLink): Promise<MovieLink> {
+    const db = await this.ensureDb();
+    const [result] = await db.insert(movieLinks).values(insertMovieLink).returning();
+    return result;
+  }
+
+  async getMovieLinks(): Promise<MovieLink[]> {
+    const db = await this.ensureDb();
+    return await db.select().from(movieLinks).orderBy(movieLinks.dateAdded);
+  }
+
+  async getMovieLinkByShortId(shortId: string): Promise<MovieLink | undefined> {
+    const db = await this.ensureDb();
+    const [result] = await db.select().from(movieLinks).where(eq(movieLinks.shortId, shortId));
+    return result;
+  }
+
+  async updateMovieLinkViews(shortId: string): Promise<void> {
+    const db = await this.ensureDb();
+    await db.update(movieLinks)
+      .set({ views: sql`${movieLinks.views} + 1` })
+      .where(eq(movieLinks.shortId, shortId));
+  }
+
+  async updateMovieLinkOriginalUrl(id: number, originalLink: string): Promise<MovieLink> {
+    const db = await this.ensureDb();
+    const [result] = await db.update(movieLinks)
+      .set({ originalLink })
+      .where(eq(movieLinks.id, id))
+      .returning();
+    if (!result) throw new Error("Movie link not found");
+    return result;
+  }
+
+  async updateMovieLinkFull(id: number, originalLink: string, adsEnabled: boolean): Promise<MovieLink> {
+    const db = await this.ensureDb();
+    const [result] = await db.update(movieLinks)
+      .set({ originalLink, adsEnabled })
+      .where(eq(movieLinks.id, id))
+      .returning();
+    if (!result) throw new Error("Movie link not found");
+    return result;
+  }
+
+  async deleteMovieLink(id: number): Promise<void> {
+    const db = await this.ensureDb();
+    await db.delete(movieLinks).where(eq(movieLinks.id, id));
+  }
+
+  // API Token methods
+  async createApiToken(insertToken: InsertApiToken): Promise<ApiToken> {
+    const db = await this.ensureDb();
+    const [result] = await db.insert(apiTokens).values(insertToken).returning();
+    return result;
+  }
+
+  async getApiTokens(): Promise<ApiToken[]> {
+    const db = await this.ensureDb();
+    return await db.select().from(apiTokens).orderBy(apiTokens.createdAt);
+  }
+
+  async getApiTokenByValue(tokenValue: string): Promise<ApiToken | undefined> {
+    const db = await this.ensureDb();
+    const [result] = await db.select().from(apiTokens)
+      .where(and(eq(apiTokens.tokenValue, tokenValue), eq(apiTokens.isActive, true)));
+    return result;
+  }
+
+  async updateTokenLastUsed(tokenValue: string): Promise<void> {
+    const db = await this.ensureDb();
+    await db.update(apiTokens)
+      .set({ lastUsed: new Date() })
+      .where(eq(apiTokens.tokenValue, tokenValue));
+  }
+
+  async updateApiTokenStatus(id: number, isActive: boolean): Promise<ApiToken> {
+    const db = await this.ensureDb();
+    const [result] = await db.update(apiTokens)
+      .set({ isActive })
+      .where(eq(apiTokens.id, id))
+      .returning();
+    if (!result) throw new Error("API token not found");
+    return result;
+  }
+
+  async deleteApiToken(id: number): Promise<void> {
+    const db = await this.ensureDb();
+    await db.delete(apiTokens).where(eq(apiTokens.id, id));
+  }
+
+  async deactivateApiToken(id: number): Promise<void> {
+    const db = await this.ensureDb();
+    await db.update(apiTokens)
+      .set({ isActive: false })
+      .where(eq(apiTokens.id, id));
+  }
+
+  // Admin Settings methods - simplified for demo (using fallback credentials)
+  async getAdminSettings(): Promise<AdminSettings | undefined> {
+    const db = await this.ensureDb();
+    try {
+      const [result] = await db.select().from(adminSettings).limit(1);
+      return result;
+    } catch (error) {
+      console.warn('Admin settings table not found, using fallback credentials');
+      // Return default admin settings for demo purposes
+      return {
+        id: 1,
+        adminId: 'admin',
+        adminPassword: 'admin123',
+        updatedAt: new Date()
+      } as AdminSettings;
+    }
+  }
+
+  async updateAdminCredentials(adminId: string, adminPassword: string): Promise<AdminSettings> {
+    const db = await this.ensureDb();
+    const [result] = await db.update(adminSettings)
+      .set({ adminId, adminPassword, updatedAt: new Date() })
+      .where(eq(adminSettings.id, 1))
+      .returning();
+    if (!result) throw new Error("Admin settings not found");
+    return result;
+  }
+
+  // Quality Movie Links methods
+  async createQualityMovieLink(insertQualityMovieLink: InsertQualityMovieLink): Promise<QualityMovieLink> {
+    const db = await this.ensureDb();
+    const [result] = await db.insert(qualityMovieLinks).values(insertQualityMovieLink).returning();
+    return result;
+  }
+
+  async getQualityMovieLinks(): Promise<QualityMovieLink[]> {
+    const db = await this.ensureDb();
+    return await db.select().from(qualityMovieLinks).orderBy(qualityMovieLinks.dateAdded);
+  }
+
+  async getQualityMovieLinkByShortId(shortId: string): Promise<QualityMovieLink | undefined> {
+    const db = await this.ensureDb();
+    const [result] = await db.select().from(qualityMovieLinks).where(eq(qualityMovieLinks.shortId, shortId));
+    return result;
+  }
+
+  async updateQualityMovieLinkViews(shortId: string): Promise<void> {
+    const db = await this.ensureDb();
+    await db.update(qualityMovieLinks)
+      .set({ views: sql`${qualityMovieLinks.views} + 1` })
+      .where(eq(qualityMovieLinks.shortId, shortId));
+  }
+
+  async updateQualityMovieLink(id: number, updates: Partial<InsertQualityMovieLink>): Promise<QualityMovieLink> {
+    const db = await this.ensureDb();
+    const [result] = await db.update(qualityMovieLinks)
+      .set(updates)
+      .where(eq(qualityMovieLinks.id, id))
+      .returning();
+    if (!result) throw new Error("Quality movie link not found");
+    return result;
+  }
+
+  async deleteQualityMovieLink(id: number): Promise<void> {
+    const db = await this.ensureDb();
+    await db.delete(qualityMovieLinks).where(eq(qualityMovieLinks.id, id));
+  }
+
+  // Quality Episodes methods (basic implementation)
+  async createQualityEpisode(insertQualityEpisode: InsertQualityEpisode): Promise<QualityEpisode> {
+    const db = await this.ensureDb();
+    const [result] = await db.insert(qualityEpisodes).values(insertQualityEpisode).returning();
+    return result;
+  }
+
+  async getQualityEpisodes(): Promise<QualityEpisode[]> {
+    const db = await this.ensureDb();
+    return await db.select().from(qualityEpisodes).orderBy(qualityEpisodes.dateAdded);
+  }
+
+  async getQualityEpisodeByShortId(shortId: string): Promise<QualityEpisode | undefined> {
+    const db = await this.ensureDb();
+    const [result] = await db.select().from(qualityEpisodes).where(eq(qualityEpisodes.shortId, shortId));
+    return result;
+  }
+
+  async updateQualityEpisodeViews(shortId: string): Promise<void> {
+    const db = await this.ensureDb();
+    await db.update(qualityEpisodes)
+      .set({ views: sql`${qualityEpisodes.views} + 1` })
+      .where(eq(qualityEpisodes.shortId, shortId));
+  }
+
+  async updateQualityEpisode(id: number, updates: Partial<InsertQualityEpisode>): Promise<QualityEpisode> {
+    const db = await this.ensureDb();
+    const [result] = await db.update(qualityEpisodes)
+      .set(updates)
+      .where(eq(qualityEpisodes.id, id))
+      .returning();
+    if (!result) throw new Error("Quality episode not found");
+    return result;
+  }
+
+  async deleteQualityEpisode(id: number): Promise<void> {
+    const db = await this.ensureDb();
+    await db.delete(qualityEpisodes).where(eq(qualityEpisodes.id, id));
+  }
+
+  // Quality Zip methods (basic implementation)
+  async createQualityZip(insertQualityZip: InsertQualityZip): Promise<QualityZip> {
+    const db = await this.ensureDb();
+    const [result] = await db.insert(qualityZips).values(insertQualityZip).returning();
+    return result;
+  }
+
+  async getQualityZips(): Promise<QualityZip[]> {
+    const db = await this.ensureDb();
+    return await db.select().from(qualityZips).orderBy(qualityZips.dateAdded);
+  }
+
+  async getQualityZipByShortId(shortId: string): Promise<QualityZip | undefined> {
+    const db = await this.ensureDb();
+    const [result] = await db.select().from(qualityZips).where(eq(qualityZips.shortId, shortId));
+    return result;
+  }
+
+  async updateQualityZipViews(shortId: string): Promise<void> {
+    const db = await this.ensureDb();
+    await db.update(qualityZips)
+      .set({ views: sql`${qualityZips.views} + 1` })
+      .where(eq(qualityZips.shortId, shortId));
+  }
+
+  async updateQualityZip(id: number, updates: Partial<InsertQualityZip>): Promise<QualityZip> {
+    const db = await this.ensureDb();
+    const [result] = await db.update(qualityZips)
+      .set(updates)
+      .where(eq(qualityZips.id, id))
+      .returning();
+    if (!result) throw new Error("Quality zip not found");
+    return result;
+  }
+
+  async deleteQualityZip(id: number): Promise<void> {
+    const db = await this.ensureDb();
+    await db.delete(qualityZips).where(eq(qualityZips.id, id));
+  }
+
+  // Ad View Sessions methods (basic implementation)
+  async hasSeenAd(ipAddress: string, shortId: string, linkType: string = 'single'): Promise<boolean> {
+    const db = await this.ensureDb();
+    await this.cleanupExpiredSessions();
+    
+    const [result] = await db.select().from(adViewSessions)
+      .where(and(
+        eq(adViewSessions.ipAddress, ipAddress),
+        eq(adViewSessions.shortId, shortId)
+      ))
+      .limit(1);
+    
+    if (result) {
+      return new Date() < new Date(result.expiresAt);
+    }
+    return false;
+  }
+
+  async recordAdView(ipAddress: string, shortId: string, linkType: string = 'single'): Promise<void> {
+    const db = await this.ensureDb();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
+    
+    await db.insert(adViewSessions).values({
+      ipAddress,
+      shortId,
+      expiresAt
+    }).onConflictDoNothing();
+  }
+
+  async cleanupExpiredSessions(): Promise<void> {
+    const db = await this.ensureDb();
+    await db.delete(adViewSessions)
+      .where(sql`${adViewSessions.expiresAt} < NOW()`);
+  }
+}
+
+// Use Drizzle storage for direct database access
+export const storage = new DrizzleStorage();
