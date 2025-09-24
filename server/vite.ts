@@ -34,8 +34,15 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   app.use(vite.middlewares);
+  
+  // Only serve HTML for non-asset routes in development
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
+
+    // Skip assets, api routes, and other static content
+    if (url.startsWith('/assets/') || url.startsWith('/api/') || url.startsWith('/public/')) {
+      return next();
+    }
 
     try {
       const clientTemplate = path.resolve(
