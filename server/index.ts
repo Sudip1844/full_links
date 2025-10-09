@@ -1,8 +1,15 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { setupVite, log } from "./vite";
 
 const app = express();
+
+app.use(cors({
+  origin: process.env.CLIENT_URL || '*',
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -48,13 +55,10 @@ app.use((req, res, next) => {
     // Don't throw the error as it crashes the process
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  // Only setup vite in development mode
+  // In production, the client is served separately (e.g., Netlify)
   if (app.get("env") === "development") {
     await setupVite(app, server);
-  } else {
-    serveStatic(app);
   }
 
   // ALWAYS serve the app on port 5000

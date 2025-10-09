@@ -38,6 +38,17 @@ function generateShortId(): string {
   return crypto.randomBytes(3).toString('hex');
 }
 
+// Utility function to redirect to client domain
+function redirectToClient(res: Response, path: string): void {
+  const clientUrl = process.env.CLIENT_URL || '';
+  if (clientUrl) {
+    res.redirect(clientUrl + path);
+  } else {
+    // Fallback for local development
+    res.redirect(path);
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Admin configuration endpoint - get from Supabase ONLY
@@ -814,12 +825,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!movieLink && !qualityMovieLink) {
         // For expired/missing links, redirect to redirect page with error parameter
-        return res.redirect("/redirect?error=expired");
+        return redirectToClient(res, "/redirect?error=expired");
       }
 
       const link = movieLink || qualityMovieLink;
       if (!link) {
-        return res.redirect("/redirect?error=expired");
+        return redirectToClient(res, "/redirect?error=expired");
       }
 
       // Check if this IP has seen ads for this shortId in the last 5 minutes
@@ -845,10 +856,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Encode link data as URL parameter
       const encodedLinkData = encodeURIComponent(JSON.stringify(linkData));
-      res.redirect(`/redirect?link=${encodedLinkData}`);
+      redirectToClient(res, `/redirect?link=${encodedLinkData}`);
     } catch (error) {
       console.error("Error in redirect route:", error);
-      res.redirect("/redirect?error=expired");
+      redirectToClient(res, "/redirect?error=expired");
     }
   });
 
@@ -863,7 +874,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!qualityEpisode) {
         // For expired/missing episodes, redirect to redirect page with error parameter
-        return res.redirect("/redirect?error=expired");
+        return redirectToClient(res, "/redirect?error=expired");
       }
 
       // Check if this IP has seen ads for this shortId in the last 5 minutes
@@ -881,10 +892,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Encode link data as URL parameter
       const encodedLinkData = encodeURIComponent(JSON.stringify(linkData));
-      res.redirect(`/redirect?link=${encodedLinkData}`);
+      redirectToClient(res, `/redirect?link=${encodedLinkData}`);
     } catch (error) {
       console.error("Error in episode redirect route:", error);
-      res.redirect("/redirect?error=expired");
+      redirectToClient(res, "/redirect?error=expired");
     }
   });
 
@@ -930,7 +941,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!qualityZip) {
         // For expired/missing zips, redirect to redirect page with error parameter
-        return res.redirect("/redirect?error=expired");
+        return redirectToClient(res, "/redirect?error=expired");
       }
 
       // Check if this IP has seen ads for this shortId in the last 5 minutes
@@ -954,10 +965,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Encode link data as URL parameter
       const encodedLinkData = encodeURIComponent(JSON.stringify(linkData));
-      res.redirect(`/redirect?link=${encodedLinkData}`);
+      redirectToClient(res, `/redirect?link=${encodedLinkData}`);
     } catch (error) {
       console.error("Error in zip redirect route:", error);
-      res.redirect("/redirect?error=expired");
+      redirectToClient(res, "/redirect?error=expired");
     }
   });
 
