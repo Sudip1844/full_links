@@ -1,187 +1,7 @@
 # MovieZone Admin Panel
 
 ## Overview
-A movie link shortening service that allows admins to create short links for movie downloads with optional ad displays. The application consists of an admin panel for link management and a redirect page that handles the short URLs.
-
-  - **Redirect Page Optimization (2025-01-29)**: Major improvements to match design specifications
-    - Changed timer from 15 seconds to single 10-second countdown
-    - Movie name now displays above timer during countdown, hidden after completion
-    - Continue section only appears after timer completion (no premature visibility)
-    - Removed duplicate timer displays and unnecessary delay counters
-    - Fixed random view count increases by implementing proper view tracking
-    - Reduced font sizes across all content sections for better readability
-    - Removed "Go to Home" option for expired/missing links - users stay on redirect page
-    - Manual scroll to continue button instead of automatic scrolling
-    - Changed continue button text from "Continue to Bot" to simply "Continue"
-  - **Admin Panel Enhancements (2025-01-29)**: Improved admin interface and functionality
-    - Reorganized stats display in 2x2 grid: Total Links | Today's Links | Total Views | Today's Views
-    - Added Recent Links section below link generator showing last 10 created links with copy buttons
-    - Fixed generated link clearing after copying to prevent permanent display
-    - Generated links now move to recent links section after copying
-  - **Universal API Implementation (2025-08-11)**: Added secure token-based API for any platform integration
-    - Created Universal API endpoint that works with any external service (Telegram bots, Discord bots, websites, etc.)
-    - API-created links always have ads enabled (cannot be disabled for security/revenue)
-    - Admin panel links retain ads on/off toggle option
-    - All links (API + Admin) appear in same database table with full edit capability
-    - Implemented secure token authentication with Bearer token system
-    - Enhanced database table display with Views column and copy buttons for short links
-    - Updated API documentation for universal platform integration
-  - **Security & Performance Improvements (2025-08-11)**: Enhanced admin panel security and user experience
-    - Moved admin login credentials from hardcoded values to environment variables (env-config.js)
-    - Fixed recent links section to display only last 5 created links instead of 10
-    - Removed duplicate API endpoint for better code maintenance
-    - Implemented proper today's statistics calculation for links and views
-    - Added admin configuration API endpoint for secure credential management
-    - Do not use hash password for security issues. Instead use server side admin login details verification instead of sending id password to client.
-  - **Supabase Integration (2025-08-12)**:
-    - Successfully migrated memory storage to Supabase
-    - Implemented Supabase REST API client to bypass network restrictions
-    - All movie links and API tokens now stored permanently in Supabase
-    - Database connection established via REST API instead of direct PostgreSQL connection
-    - Maintained full functionality while ensuring data persistence in Supabase
-    - Fixed console errors in AdminPanel component with proper null checking
-    - Enhanced error handling in Supabase client for better reliability
-    - All data operations now working correctly with Supabase backend
-  - **Complete Supabase Migration & Admin Management (2025-08-12)**: Removed all local memory storage
-    - Completely removed MemStorage class - using only Supabase DatabaseStorage
-    - Added admin_settings table in Supabase for dynamic login credentials management
-    - Admin credentials now stored in and fetched from Supabase database
-    - Created Settings tab in admin panel for updating admin credentials in real-time
-    - API token management with full edit/delete functionality via Supabase
-    - Enhanced API token status toggle (active/inactive) with conditional delete permissions
-    - All application data now 100% stored in Supabase with no local memory dependencies
-  - **Enhanced Edit Functionality & API Documentation (2025-08-15)**: Fixed quality links editing and improved API instructions
-    - Fixed quality links edit dialog to properly display existing quality links (480p, 720p, 1080p) in input fields
-    - Enhanced field name compatibility for both camelCase and snake_case data formats
-    - Added tabbed API instructions section with separate tabs for Single Links API and Quality Links API
-    - Quality Links API tab shows proper endpoint (/api/create-quality-short-link) with complete documentation
-    - Both API instruction tabs include proper authentication headers and request/response examples
-    - Fixed quality link editing to properly remove empty quality fields from database
-    - Enhanced Available Qualities column display with dynamic quality badge showing
-  - **5-Minute Timer Skip System (2025-08-15)**: Implemented IP-based timer skip to improve user experience
-    - Added ad_view_sessions table to track IP addresses that have seen ads for specific links
-    - Users who complete the 10-second timer won't see it again for 5 minutes on the same link from same IP
-    - Prevents duplicate view counting when users return to same link within 5 minutes
-    - Improves user experience by not forcing repeated ad viewing for quality link browsing
-    - Works for ALL link types: single movies, quality movies, episodes, and quality zip links
-    - IP-based tracking ensures fair ad viewing while allowing quality link exploration
-    - Complete implementation across all redirect routes (/m/, /e/, /z/) with proper API recording
-   - **Enhanced Timer Skip System (2025-08-17)**: Fixed navigation back and refresh issues  
-    - Ad view sessions now recorded immediately when redirect page loads (not after timer completion)
-    - Users can navigate back, refresh, or try different qualities without repeated timers
-    - Timer only appears once every 5 minutes per IP address per short link
-    - Fixed display labels to show "Movie Title:" uniformly across all link types
-    - Removed sample API tokens from SQL schema - tokens created through admin panel only
-  - **Replit Agent to Replit Migration (2025-08-13)**: Successfully migrated project to standard Replit environment
-    - Removed all hardcoded admin credentials from server code and environment files
-    - Admin login now exclusively managed through Supabase admin_settings table
-    - Fixed API response formatting to handle Supabase field naming (snake_case to camelCase)
-    - Verified all existing Supabase data loads correctly (3 sample movie links confirmed)
-    - Enhanced error handling and debugging for admin settings retrieval
-    - Project now runs cleanly in Replit with proper client/server separation and security practices
-    - **Final Security Enhancements (2025-08-13)**: Completed admin panel security improvements
-      - Removed admin credentials update functionality from Settings tab (now Supabase-only)
-      - Fixed API token status toggle bug in DatabaseStorage class
-      - Settings tab now displays informational message about Supabase credential management
-      - All admin credential changes must be done directly in Supabase dashboard for enhanced security
-  - **Complete Supabase Service Role Integration (2025-08-13)**: Resolved all RLS and permission issues
-    - Added SUPABASE_SERVICE_ROLE_KEY to environment configuration for write operations
-    - Completely removed hybrid/memory storage - now using 100% Supabase DatabaseStorage
-    - Fixed all API token CRUD operations (Create, Read, Update, Delete) with proper Supabase integration
-    - All token management now persists directly to Supabase database with proper permissions
-    - Enhanced delete method in Supabase client for complete token lifecycle management
-    - Verified full functionality: token generation, status updates, deletion all working correctly
-  - **Replit Agent to Standard Replit Migration (2025-08-14)**: Successfully migrated MovieZone project to standard Replit
-    - Migrated from Replit Agent environment to standard Replit with proper client/server separation
-    - Enhanced project architecture with dual-tab interface for Single and Quality movie links
-    - Implemented quality-based movie link system alongside existing single link functionality
-    - Updated AdminPanel with dual tabs in both Home (link creation) and Database (data management) sections
-    - Quality links support multiple video qualities (480p, 720p, 1080p) with single short URL generation
-    - Enhanced RedirectPage to handle both single and quality movie links with proper URL parameter parsing
-    - Updated database storage layer with comprehensive CRUD operations for quality movie links
-    - Added comprehensive API routes for quality movie link management (/api/quality-movie-links)
-    - Implemented proper stats calculation combining both single and quality links
-    - Enhanced Recent Links section with link type indicators (Single/Quality badges)
-    - Database section now features separate tabs for Single Links and Quality Links management
-    - All existing functionality preserved while adding extensive quality-based link capabilities
-    - Project successfully runs in standard Replit environment with complete feature parity
-  - **IP-Based Timer Skip Database Integration (2025-08-15)**: Migrated ad view sessions from memory to Supabase database
-    - Added `ad_view_sessions` table to Supabase schema for persistent IP-based timer skip tracking
-    - Users who complete 10-second timer skip it for 5 minutes on same link from same IP address
-    - Enhanced storage layer with hasSeenAd, recordAdView, and cleanupExpiredSessions methods
-    - Updated redirect routes and RedirectPage component to support database-backed timer skip system
-    - Complete SQL schema includes proper indexes, RLS policies, and cleanup functions for optimal performance
-    - IP-based sessions now persist across server restarts ensuring consistent user experience
-    - **Views Count Duplicate Protection (2025-08-15)**: Enhanced view counting with IP-based duplicate protection
-      - Views count only increases on first visit from each IP address within 5-minute window
-      - Prevents artificial view inflation when users revisit same link multiple times
-      - Same IP visiting same link within 5 minutes: timer skips + no additional view count
-      - System maintains accurate view statistics while improving user experience
-  - **Quality Episodes Feature Implementation (2025-08-15)**: Added comprehensive episode-based series management
-    - Introduced third link type: Quality Episodes for creating episode-based series (Single, Quality, Episodes)
-    - Added quality_episodes database table with episode tracking and JSON-serialized episode data
-    - Each episode supports exactly 3 quality options (480p, 720p, 1080p) with auto-incrementing episode numbers
-    - Created complete Quality Episodes API endpoints for CRUD operations and Universal API integration
-    - Episodes use '/e/' URL prefix for redirects, distinct from '/m/' prefix used by movie links
-    - Enhanced storage interface with Quality Episodes methods for DatabaseStorage and MemStorage classes
-    - Added comprehensive redirect route handling for episode series with proper IP-based timer skip integration
-    - API token system supports "episode" token type for secure Quality Episodes creation via external services
-    - Episodes feature proper Supabase database integration with camelCase to snake_case field mapping
-    - Quality Episodes will appear in separate admin panel tab alongside Single and Quality movie links
-  - **Separate Deployment Architecture (2025-10-09)**: Restructured for independent client/server deployment
-    - Reorganized project structure with clean client/server separation for independent deployment
-    - Removed root-level configuration files and dependencies (no longer needed for separate deployment)
-    - Client configured with environment variable support for remote API connection (VITE_API_URL)
-    - Server updated with CORS support for cross-origin requests from client domain
-    - Added CLIENT_URL environment variable for server to redirect to client domain
-    - Updated all redirect routes to use client domain instead of local paths
-    - Created comprehensive deployment guides for Netlify (client) and Render (server)
-    - Client .env.example: VITE_API_URL for backend connection
-    - Server .env.example: SUPABASE credentials, DATABASE_URL, CLIENT_URL, NODE_ENV
-    - Deployment documentation includes environment variables, build commands, and troubleshooting
-    - Local development still works with server serving both API and client (development mode)
-    - Production deployment: Client on Netlify, Server on Render with proper CORS configuration
-    - Complete separation enables independent scaling and deployment of frontend and backend
-
-## Project Architecture
-- **Frontend**: React with TypeScript, Wouter for routing, TanStack Query for state management
-- **Backend**: Express.js server with TypeScript
-- **Database**: Supabase 
-- **Styling**: Tailwind CSS with shadcn/ui components
-
-### Database Schema
-- `movie_links` table with fields: id, movieName, originalLink, shortId, views, dateAdded, adsEnabled
-
-### API Endpoints
-- `GET /api/movie-links` - Fetch all movie links
-- `POST /api/movie-links` - Create new movie link
-- `POST /api/create-short-link` - API endpoint to create short links (Input: movieName, originalLink | Output: shortUrl)
-- `GET /api/movie-links/:shortId` - Get specific movie link by short ID
-- `PATCH /api/movie-links/:shortId/views` - Update view count
-- `PATCH /api/movie-links/:id` - Update movie link original URL
-- `DELETE /api/movie-links/:id` - Delete movie link
-
-## Deployment Options
-
-### Local/Replit Development
-- **Import Ready**: Project structure optimized for Replit imports
-- **Environment Setup**: Create `server/.env` from `server/.env.example` template
-- **Required Variables**: DATABASE_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
-- **Dependencies**: Run `npm install` in both client and server folders
-- **Start Server**: `cd server && NODE_ENV=development npm run dev`
-- **Access**: Server runs on port 5000, serves both API and client in development mode
-- **Security**: Always use your own Supabase project - rotate keys if importing from public repos
-
-### Production Deployment (Separate Hosting)
-- **Frontend**: Deploy to Netlify (See `client/DEPLOYMENT.md`)
-  - Environment: `VITE_API_URL=https://your-server.onrender.com`
-  - Build: `npm run build` in client folder
-  - Publish: `client/dist` directory
-- **Backend**: Deploy to Render (See `server/DEPLOYMENT.md`)
-  - Environment: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `CLIENT_URL`, `NODE_ENV=production`
-  - Build: `npm install && npm run build`
-  - Start: `npm run start`
-- **Complete Guide**: See `DEPLOYMENT_SUMMARY.md` for step-by-step instructions
+MovieZone is a movie link shortening service designed for administrators to generate short URLs for movie downloads, with an option to include advertisements. The application comprises an admin panel for managing links and a redirect page that processes these short URLs. The project aims to provide a robust, scalable, and user-friendly platform for content distributors to manage and monetize movie links. It supports various link types including single movies, quality-based movie links, and episode series, integrating a universal API for broad platform compatibility.
 
 ## User Preferences
 - Use TypeScript for all new code
@@ -190,3 +10,47 @@ A movie link shortening service that allows admins to create short links for mov
 - Use wouter for routing instead of React Router
 - Admin login: Server-side verification without password hashing
 - Security: Always use your own Supabase credentials, never commit secrets
+
+## System Architecture
+The application is structured into independent client and server components to allow for separate deployment and scaling.
+
+### Frontend
+- **Technology**: React with TypeScript, Wouter for routing, TanStack Query for state management.
+- **Styling**: Tailwind CSS with shadcn/ui components.
+- **UI/UX Decisions**: Features an admin panel with a 2x2 stats grid (Total Links, Today's Links, Total Views, Today's Views), a "Recent Links" section, and tabbed interfaces for managing Single Links, Quality Links, and Episodes. The redirect page includes a 10-second countdown timer, movie name display, and a "Continue" section that appears after timer completion. IP-based timer skip is implemented for improved user experience, preventing repeated ad views within a 5-minute window.
+
+### Backend
+- **Technology**: Express.js server with TypeScript.
+- **Core Features**:
+    - **Link Management**: Creation, editing, and deletion of single, quality, and episode links.
+    - **View Tracking**: Accurate view counting with IP-based duplicate protection.
+    - **Admin Management**: Secure admin login via Supabase-managed credentials and a dedicated settings tab for credential updates.
+    - **API Token Management**: CRUD operations for API tokens with status toggling.
+    - **Timer Skip System**: IP-based ad view session tracking to skip timers for returning users.
+    - **Universal API**: A secure, token-based API for creating short links, compatible with various external services. API-created links always have ads enabled.
+
+### Database
+- **Technology**: Supabase (PostgreSQL backend).
+- **Data Persistence**: All application data, including movie links, API tokens, admin settings, and ad view sessions, is stored in Supabase.
+- **Key Tables**:
+    - `movie_links`: Stores single movie link details (id, movieName, originalLink, shortId, views, dateAdded, adsEnabled).
+    - `quality_movie_links`: Stores movie links with multiple quality options.
+    - `quality_episodes`: Manages episode series with structured episode data and quality options.
+    - `api_tokens`: Stores API token information for external service integration.
+    - `admin_settings`: Manages dynamic admin login credentials.
+    - `ad_view_sessions`: Tracks IP addresses for timer skip functionality.
+
+### API Endpoints
+- `GET /api/movie-links`: Retrieve all movie links.
+- `POST /api/movie-links`: Create a new movie link.
+- `POST /api/create-short-link`: Universal API for creating short links (input: movieName, originalLink; output: shortUrl).
+- `GET /api/movie-links/:shortId`: Fetch a specific movie link by its short ID.
+- `PATCH /api/movie-links/:shortId/views`: Update the view count for a link.
+- `PATCH /api/movie-links/:id`: Modify the original URL of a movie link.
+- `DELETE /api/movie-links/:id`: Remove a movie link.
+- Additional endpoints for quality movie links and quality episodes management.
+
+## External Dependencies
+- **Supabase**: Used as the primary database for all data storage and management.
+- **Render**: Recommended platform for backend server deployment.
+- **Netlify**: Recommended platform for frontend client deployment.
