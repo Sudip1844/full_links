@@ -128,6 +128,20 @@ A movie link shortening service that allows admins to create short links for mov
     - API token system supports "episode" token type for secure Quality Episodes creation via external services
     - Episodes feature proper Supabase database integration with camelCase to snake_case field mapping
     - Quality Episodes will appear in separate admin panel tab alongside Single and Quality movie links
+  - **Separate Deployment Architecture (2025-10-09)**: Restructured for independent client/server deployment
+    - Reorganized project structure with clean client/server separation for independent deployment
+    - Removed root-level configuration files and dependencies (no longer needed for separate deployment)
+    - Client configured with environment variable support for remote API connection (VITE_API_URL)
+    - Server updated with CORS support for cross-origin requests from client domain
+    - Added CLIENT_URL environment variable for server to redirect to client domain
+    - Updated all redirect routes to use client domain instead of local paths
+    - Created comprehensive deployment guides for Netlify (client) and Render (server)
+    - Client .env.example: VITE_API_URL for backend connection
+    - Server .env.example: SUPABASE credentials, DATABASE_URL, CLIENT_URL, NODE_ENV
+    - Deployment documentation includes environment variables, build commands, and troubleshooting
+    - Local development still works with server serving both API and client (development mode)
+    - Production deployment: Client on Netlify, Server on Render with proper CORS configuration
+    - Complete separation enables independent scaling and deployment of frontend and backend
 
 ## Project Architecture
 - **Frontend**: React with TypeScript, Wouter for routing, TanStack Query for state management
@@ -147,14 +161,27 @@ A movie link shortening service that allows admins to create short links for mov
 - `PATCH /api/movie-links/:id` - Update movie link original URL
 - `DELETE /api/movie-links/:id` - Delete movie link
 
-## GitHub Import to Replit Setup
+## Deployment Options
+
+### Local/Replit Development
 - **Import Ready**: Project structure optimized for Replit imports
-- **Environment Setup**: Use Replit Secrets (preferred) or create `server/.env` from template
-- **Required Secrets**: DATABASE_URL, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
-- **Dependencies**: All packages pre-configured in package.json
-- **Workflow**: `npm run dev` starts both frontend and backend on port 5000
+- **Environment Setup**: Create `server/.env` from `server/.env.example` template
+- **Required Variables**: DATABASE_URL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+- **Dependencies**: Run `npm install` in both client and server folders
+- **Start Server**: `cd server && NODE_ENV=development npm run dev`
+- **Access**: Server runs on port 5000, serves both API and client in development mode
 - **Security**: Always use your own Supabase project - rotate keys if importing from public repos
-- **Setup Steps**: 1) Import from GitHub, 2) Create your own Supabase project, 3) Set environment variables, 4) Run application
+
+### Production Deployment (Separate Hosting)
+- **Frontend**: Deploy to Netlify (See `client/DEPLOYMENT.md`)
+  - Environment: `VITE_API_URL=https://your-server.onrender.com`
+  - Build: `npm run build` in client folder
+  - Publish: `client/dist` directory
+- **Backend**: Deploy to Render (See `server/DEPLOYMENT.md`)
+  - Environment: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `CLIENT_URL`, `NODE_ENV=production`
+  - Build: `npm install && npm run build`
+  - Start: `npm run start`
+- **Complete Guide**: See `DEPLOYMENT_SUMMARY.md` for step-by-step instructions
 
 ## User Preferences
 - Use TypeScript for all new code

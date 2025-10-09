@@ -13,49 +13,72 @@ A secure movie link shortening service with Universal API integration for multip
 ## 📁 Project Structure
 
 ```
-├── server/           # Backend Express.js server
-│   ├── .env.example  # Environment template
-│   └── .env         # Your Supabase credentials (create from .env.example)
-├── client/           # Frontend React application  
-├── shared/           # Shared TypeScript schemas
-└── DEPLOYMENT_GUIDE.md
+moviezone/
+├── client/                    # Frontend React application
+│   ├── src/                   # React components and pages
+│   ├── .env.example          # Client environment template
+│   ├── package.json          # Client dependencies
+│   └── DEPLOYMENT.md         # Netlify deployment guide
+│
+├── server/                    # Backend Express.js API
+│   ├── shared/               # Shared TypeScript schemas
+│   ├── migrations/           # Database migrations
+│   ├── .env.example          # Server environment template
+│   ├── package.json          # Server dependencies
+│   └── DEPLOYMENT.md         # Render deployment guide
+│
+└── DEPLOYMENT_SUMMARY.md      # Complete deployment guide
 ```
 
 ## 🔧 Setup Instructions
 
-### For Replit (Recommended)
-1. **Import from GitHub**: Import this repository to Replit
-2. **Set Replit Secrets** (Preferred): Add environment variables in Replit Secrets:
-   - `DATABASE_URL`: Your Supabase database URL
-   - `SUPABASE_URL`: Your Supabase project URL  
-   - `SUPABASE_ANON_KEY`: Your Supabase anon key
-   - `SUPABASE_SERVICE_ROLE_KEY`: Your Supabase service role key
-3. **Alternative**: Copy `server/.env.example` to `server/.env` and add your credentials
-4. **Auto-start**: Application starts automatically on port 5000 after credentials are set
-5. **Dependencies**: All packages are pre-configured in package.json
+### Local Development (Replit/Local Machine)
 
-### For Local Development
-1. **Environment Configuration**: Update `server/.env` with your credentials:
-```env
-DATABASE_URL=your_supabase_database_url
-SUPABASE_URL=your_supabase_project_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-```
+1. **Clone Repository**:
+   ```bash
+   git clone <your-repo-url>
+   cd moviezone
+   ```
 
-2. **Database Setup**: Run the SQL schema from `SUPABASE_SQL_SCHEMA.sql` in your Supabase SQL Editor
+2. **Setup Server**:
+   ```bash
+   cd server
+   npm install
+   cp .env.example .env
+   # Edit .env with your Supabase credentials
+   ```
 
-3. **Start Application**:
-```bash
-npm install
-npm run dev
-```
+3. **Setup Client**:
+   ```bash
+   cd ../client
+   npm install
+   # For local dev, leave VITE_API_URL empty (uses same origin)
+   ```
 
-### Production Deployment
-```bash
-npm run build
-npm run start
-```
+4. **Database Setup**: 
+   - Create Supabase project
+   - Run SQL schema from `SUPABASE_SQL_SCHEMA.sql`
+
+5. **Start Development Server**:
+   ```bash
+   cd server
+   NODE_ENV=development npm run dev
+   # Server runs on port 5000, serves both API and client
+   ```
+
+### Production Deployment (Separate Hosting)
+
+**🚀 Quick Deploy:**
+1. **Backend → Render** (See `server/DEPLOYMENT.md`)
+2. **Frontend → Netlify** (See `client/DEPLOYMENT.md`)
+3. **Complete Guide** → `DEPLOYMENT_SUMMARY.md`
+
+**Environment Variables:**
+- **Client (Netlify)**: `VITE_API_URL=https://your-server.onrender.com`
+- **Server (Render)**: 
+  - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`
+  - `CLIENT_URL=https://your-app.netlify.app`
+  - `NODE_ENV=production`
 
 ## 🔐 Security Features
 
@@ -72,7 +95,15 @@ See `API_DOCUMENTATION.md` for complete integration examples.
 
 ## 🌐 Deployment
 
-See `DEPLOYMENT_GUIDE.md` for Hostinger and other hosting platforms.
+**Recommended Stack:**
+- **Frontend**: Netlify (Free tier: 100GB bandwidth/month)
+- **Backend**: Render (Free tier: 750 hours/month)  
+- **Database**: Supabase (Free tier: 500MB database)
+
+**Guides:**
+- 📘 **Complete Guide**: `DEPLOYMENT_SUMMARY.md`
+- 🎨 **Frontend (Netlify)**: `client/DEPLOYMENT.md`
+- ⚙️ **Backend (Render)**: `server/DEPLOYMENT.md`
 
 ## ⚡ Universal API Usage
 
