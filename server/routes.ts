@@ -102,6 +102,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const adminSettings = await storage.getAdminSettings();
+      console.log('Admin settings retrieved:', adminSettings ? 'Found' : 'Not found');
+      
       if (!adminSettings) {
         return res.status(401).json({ error: "Authentication failed" });
       }
@@ -109,6 +111,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Compare credentials server-side (secure)
       const storedAdminId = (adminSettings as any).admin_id || (adminSettings as any).adminId;
       const storedPassword = (adminSettings as any).admin_password || (adminSettings as any).adminPassword;
+      
+      console.log('Comparing credentials - Input ID:', adminId, 'Stored ID:', storedAdminId ? 'exists' : 'missing');
+      console.log('Password check - Input:', adminPassword ? 'provided' : 'missing', 'Stored:', storedPassword ? 'exists' : 'missing');
       
       if (adminId === storedAdminId && adminPassword === storedPassword) {
         // Authentication successful
