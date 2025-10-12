@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMovieLinkSchema, createShortLinkSchema, insertQualityMovieLinkSchema, createQualityShortLinkSchema, insertQualityEpisodeSchema, createQualityEpisodeSchema, insertQualityZipSchema, createQualityZipSchema } from "@shared/schema";
+import { insertMovieLinkSchema, createShortLinkSchema, insertQualityMovieLinkSchema, createQualityShortLinkSchema, insertQualityEpisodeSchema, createQualityEpisodeSchema, insertQualityZipSchema, createQualityZipSchema } from "./shared/schema.js";
 import { z } from "zod";
 import crypto from "crypto";
 

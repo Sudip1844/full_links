@@ -1,4 +1,4 @@
-import { movieLinks, apiTokens, adminSettings, qualityMovieLinks, qualityEpisodes, qualityZips, adViewSessions, type MovieLink, type InsertMovieLink, type ApiToken, type InsertApiToken, type AdminSettings, type InsertAdminSettings, type QualityMovieLink, type InsertQualityMovieLink, type QualityEpisode, type InsertQualityEpisode, type QualityZip, type InsertQualityZip, type AdViewSession, type InsertAdViewSession } from "@shared/schema";
+import { movieLinks, apiTokens, adminSettings, qualityMovieLinks, qualityEpisodes, qualityZips, adViewSessions, type MovieLink, type InsertMovieLink, type ApiToken, type InsertApiToken, type AdminSettings, type InsertAdminSettings, type QualityMovieLink, type InsertQualityMovieLink, type QualityEpisode, type InsertQualityEpisode, type QualityZip, type InsertQualityZip, type AdViewSession, type InsertAdViewSession } from "./shared/schema.js";
 
 // Storage interface for movie links and API tokens
 export interface IStorage {
