@@ -2,8 +2,11 @@
 # Created: October 13, 2025
 # Goal: Separate client (Netlify) and server (Render) deployments with proper configuration
 
+# নোট: যখন কোন STEP সম্পূর্ণ হবে, তখন সেই STEP এর শিরোনাম এভাবে দেখানো হবে:
+# ~~STEP X: Task Name~~ (COMPLETED) ✅
+
 ================================================================================================
-STEP 1: Create Netlify Configuration File
+~~STEP 1: Create Netlify Configuration File~~ (COMPLETED) ✅
 ================================================================================================
 File: netlify.toml
 Purpose: Configure Netlify deployment settings
@@ -21,7 +24,7 @@ Acceptance Criteria:
   ✓ SPA redirects configured
 
 ================================================================================================
-STEP 2: Create Render Configuration File  
+~~STEP 2: Create Render Configuration File~~ (COMPLETED) ✅
 ================================================================================================
 File: render.yaml (or server/Procfile)
 Purpose: Configure Render deployment settings
@@ -39,7 +42,7 @@ Acceptance Criteria:
   ✓ Environment variables documented
 
 ================================================================================================
-STEP 3: Create Environment Files
+~~STEP 3: Create Environment Files~~ (COMPLETED) ✅
 ================================================================================================
 Files: server/.env.server, client/.env.client
 Purpose: Separate environment variables for each deployment

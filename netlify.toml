@@ -1,0 +1,28 @@
+# Netlify Configuration for Client Deployment
+
+[build]
+  # Build command for client
+  command = "npm run build:client"
+  
+  # Publish directory - where the built files are
+  publish = "client/dist"
+
+# SPA (Single Page Application) redirect rules
+# This ensures all routes are handled by React Router
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Environment variables (set these in Netlify UI)
+# VITE_API_URL = "https://your-render-app.onrender.com"
+# VITE_SUPABASE_URL = "your-supabase-url"
+# VITE_SUPABASE_ANON_KEY = "your-supabase-anon-key"
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

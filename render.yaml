@@ -1,0 +1,46 @@
+# Render Configuration for Server Deployment
+
+services:
+  - type: web
+    name: moviezone-server
+    env: node
+    region: singapore
+    plan: free
+    
+    # Build configuration
+    buildCommand: npm install && npm run build:server
+    
+    # Start command
+    startCommand: node server/dist/index.js
+    
+    # Health check endpoint
+    healthCheckPath: /api/health
+    
+    # Environment variables (set these in Render UI)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      
+      - key: DATABASE_URL
+        sync: false
+        # Set in Render dashboard
+      
+      - key: SUPABASE_URL
+        sync: false
+        # Set in Render dashboard
+      
+      - key: SUPABASE_ANON_KEY
+        sync: false
+        # Set in Render dashboard
+      
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+        # Set in Render dashboard
+      
+      - key: ALLOWED_ORIGINS
+        sync: false
+        # Set to your Netlify URL, e.g., "https://your-app.netlify.app"
+      
+      - key: SERVE_STATIC
+        value: false
+        # Don't serve static files, Netlify handles that

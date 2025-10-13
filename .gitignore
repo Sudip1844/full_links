@@ -11,11 +11,15 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 server/.env
+server/.env.server
+client/.env.client
 
 # Build outputs
 dist/
 build/
 out/
+server/dist/
+client/dist/
 
 # Runtime files
 *.log
