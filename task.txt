@@ -1,0 +1,249 @@
+# Netlify & Render Deployment Separation - Task List
+# Created: October 13, 2025
+# Goal: Separate client (Netlify) and server (Render) deployments with proper configuration
+
+================================================================================================
+STEP 1: Create Netlify Configuration File
+================================================================================================
+File: netlify.toml
+Purpose: Configure Netlify deployment settings
+Tasks:
+  - Create netlify.toml in root directory
+  - Set publish directory to "client/dist"
+  - Set build command to "npm run build:client"
+  - Configure redirects for SPA routing
+  - Add environment variable placeholders
+
+Acceptance Criteria:
+  ✓ netlify.toml file exists
+  ✓ Publish directory correctly set
+  ✓ Build command specified
+  ✓ SPA redirects configured
+
+================================================================================================
+STEP 2: Create Render Configuration File  
+================================================================================================
+File: render.yaml (or server/Procfile)
+Purpose: Configure Render deployment settings
+Tasks:
+  - Create render.yaml in root directory
+  - Set build command to "npm run build:server"
+  - Set start command to "node server/dist/index.js"
+  - Specify Node.js environment
+  - Configure health check endpoint
+
+Acceptance Criteria:
+  ✓ render.yaml file exists
+  ✓ Build and start commands specified
+  ✓ Working directory configured
+  ✓ Environment variables documented
+
+================================================================================================
+STEP 3: Create Environment Files
+================================================================================================
+Files: server/.env.server, client/.env.client
+Purpose: Separate environment variables for each deployment
+Tasks:
+  - Create server/.env.server with:
+    * DATABASE_URL
+    * SUPABASE_URL  
+    * SUPABASE_ANON_KEY
+    * SUPABASE_SERVICE_ROLE_KEY
+    * ALLOWED_ORIGINS (for CORS)
+  
+  - Create client/.env.client with:
+    * VITE_API_URL (placeholder for Render server URL)
+    * VITE_SUPABASE_URL (if needed on client)
+    * VITE_SUPABASE_ANON_KEY (if needed on client)
+
+  - Add .env.server and .env.client to .gitignore
+  - Create .env.server.example and .env.client.example for documentation
+
+Acceptance Criteria:
+  ✓ server/.env.server created with all server variables
+  ✓ client/.env.client created with VITE_ prefixed variables
+  ✓ Example files created for documentation
+  ✓ Files added to .gitignore
+
+================================================================================================
+STEP 4: Update Build Scripts in package.json
+================================================================================================
+File: package.json
+Purpose: Create separate build commands
+Tasks:
+  - Add "build:client" script:
+    * Command: "vite build"
+    * Output: client/dist
+  
+  - Add "build:server" script:
+    * Command: "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=server/dist"
+    * Output: server/dist
+  
+  - Update "build" script to run both:
+    * Command: "npm run build:client && npm run build:server"
+
+Acceptance Criteria:
+  ✓ build:client script added
+  ✓ build:server script added  
+  ✓ build script runs both
+  ✓ Outputs go to correct directories
+
+================================================================================================
+STEP 5: Update Vite Configuration
+================================================================================================
+File: vite.config.ts
+Purpose: Change client build output directory
+Tasks:
+  - Change build.outDir from "dist/public" to "../client/dist"
+  - Ensure paths are correctly resolved
+  - Keep emptyOutDir: true
+
+Acceptance Criteria:
+  ✓ Client builds to client/dist
+  ✓ No build errors
+  ✓ Assets properly bundled
+
+================================================================================================
+STEP 6: Add CORS Middleware to Server
+================================================================================================
+File: server/index.ts
+Purpose: Allow cross-origin requests from Netlify
+Tasks:
+  - Install cors package if not present
+  - Add CORS middleware configuration
+  - Read ALLOWED_ORIGINS from environment
+  - Configure CORS to accept credentials
+  - Add CORS before other middleware
+
+Acceptance Criteria:
+  ✓ CORS middleware added
+  ✓ Environment variable based origins
+  ✓ Credentials enabled
+  ✓ Preflight requests handled
+
+================================================================================================
+STEP 7: Update Client API Configuration
+================================================================================================
+File: client/src/lib/queryClient.ts
+Purpose: Use environment-based API URL
+Tasks:
+  - Create API_BASE_URL constant from import.meta.env.VITE_API_URL
+  - Add fallback for development (empty string for relative URLs)
+  - Update queryFn to use base URL
+  - Update apiRequest to use base URL
+  - Ensure all API calls are prefixed correctly
+
+Acceptance Criteria:
+  ✓ API_BASE_URL configured
+  ✓ Development mode works with relative URLs
+  ✓ Production mode uses env variable
+  ✓ All API calls updated
+
+================================================================================================
+STEP 8: Update Server Static File Serving
+================================================================================================
+File: server/index.ts
+Purpose: Make static serving optional for separate deployments
+Tasks:
+  - Modify serveStatic function to be optional
+  - Check if SERVE_STATIC env variable is true
+  - Keep development mode as-is (with Vite)
+  - Only serve static in production if SERVE_STATIC=true
+
+Acceptance Criteria:
+  ✓ Static serving is optional
+  ✓ Environment variable controls behavior
+  ✓ Development mode unchanged
+  ✓ Render deployment won't serve static files
+
+================================================================================================
+STEP 9: Update .gitignore
+================================================================================================
+File: .gitignore
+Purpose: Exclude new env files and dist folders
+Tasks:
+  - Add server/.env.server
+  - Add client/.env.client
+  - Add server/dist/
+  - Add client/dist/
+  - Keep existing entries
+
+Acceptance Criteria:
+  ✓ New env files ignored
+  ✓ New dist folders ignored
+  ✓ No sensitive data committed
+
+================================================================================================
+STEP 10: Create Deployment Documentation
+================================================================================================
+File: DEPLOYMENT.md
+Purpose: Document deployment process
+Tasks:
+  - Document Netlify setup steps
+  - Document Render setup steps
+  - List required environment variables for each platform
+  - Explain GitHub auto-deploy integration
+  - Provide troubleshooting tips
+
+Acceptance Criteria:
+  ✓ DEPLOYMENT.md created
+  ✓ Step-by-step instructions included
+  ✓ Environment variables documented
+  ✓ Common issues covered
+
+================================================================================================
+STEP 11: Test Build Commands Locally
+================================================================================================
+Purpose: Verify builds work correctly
+Tasks:
+  - Run npm run build:client
+  - Verify client/dist folder created
+  - Check client/dist contents
+  - Run npm run build:server  
+  - Verify server/dist folder created
+  - Check server/dist/index.js exists
+  - Run npm run build (both)
+  - Verify both dist folders created
+
+Acceptance Criteria:
+  ✓ build:client completes without errors
+  ✓ client/dist has index.html and assets
+  ✓ build:server completes without errors
+  ✓ server/dist has index.js
+  ✓ Combined build works
+
+================================================================================================
+STEP 12: Final CORS & Environment Testing (After Deployment)
+================================================================================================
+Purpose: Verify cross-origin setup works
+Tasks:
+  - User deploys client to Netlify
+  - User deploys server to Render
+  - User provides both URLs
+  - Update ALLOWED_ORIGINS with Netlify URL
+  - Update VITE_API_URL with Render URL
+  - Test API calls from Netlify to Render
+  - Fix any CORS issues
+  - Verify all functionality works
+
+Acceptance Criteria:
+  ✓ Client hosted on Netlify
+  ✓ Server hosted on Render
+  ✓ CORS configured with correct origins
+  ✓ API calls successful
+  ✓ Application fully functional
+
+================================================================================================
+
+NOTES:
+- Each step is independent and can be done separately
+- Steps 1-11 can be completed before deployment
+- Step 12 requires deployment URLs from user
+- If usage limits hit, user can continue from any step number
+- All changes will auto-deploy via GitHub integration
+
+IMPORTANT REMINDERS:
+- DO NOT commit .env files with real credentials
+- Test locally before deploying
+- Keep backup of working configuration
+- Document any issues encountered
