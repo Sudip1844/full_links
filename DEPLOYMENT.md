@@ -30,10 +30,12 @@ git push origin main
 Netlify Dashboard → Site Settings → Environment Variables এ যান এবং এই variables গুলো add করুন:
 
 ```
-VITE_BACKEND_URL=https://full-links.onrender.com
-VITE_SUPABASE_URL=https://ztorzqnvzxbptmdmaqyi.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0b3J6cW52enhicHRtZG1hcXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5MjYxMjYsImV4cCI6MjA3MDUwMjEyNn0.W3vfOKZWwqRNZdCdcQZzHhsQOwvMxCzXJu3VZ7pHT-o
+VITE_BACKEND_URL=https://your-render-app.onrender.com
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
+
+**⚠️ গুরুত্বপূর্ণ**: উপরের placeholder values এর জায়গায় আপনার আসল values ব্যবহার করুন!
 
 ### Step 4: Build Settings Check করুন
 
@@ -59,15 +61,18 @@ Render Dashboard → Environment তে যান এবং এই variables গ
 
 ```
 NODE_ENV=production
-DATABASE_URL=postgresql://postgres:Sudipb184495@db.ztorzqnvzxbptmdmaqyi.supabase.co:5432/postgres
-SUPABASE_URL=https://ztorzqnvzxbptmdmaqyi.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0b3J6cW52enhicHRtZG1hcXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5MjYxMjYsImV4cCI6MjA3MDUwMjEyNn0.W3vfOKZWwqRNZdCdcQZzHhsQOwvMxCzXJu3VZ7pHT-o
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp0b3J6cW52enhicHRtZG1hcXlpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDkyNjEyNiwiZXhwIjoyMDcwNTAyMTI2fQ.hcYnrfc1A4qdHj2ERRqZ615hqmD0Med6xdPAb2s5Yb0
-FRONTEND_URL=https://your-moviezone-frontend.netlify.app
-ALLOWED_ORIGINS=https://your-moviezone-frontend.netlify.app
+DATABASE_URL=your-database-connection-string
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+FRONTEND_URL=https://your-frontend.netlify.app
+ALLOWED_ORIGINS=https://your-frontend.netlify.app
 ```
 
-**গুরুত্বপূর্ণ**: `FRONTEND_URL` এবং `ALLOWED_ORIGINS` এ আপনার Netlify URL দিন!
+**⚠️ গুরুত্বপূর্ণ**: 
+- উপরের সব placeholder values এর জায়গায় আপনার আসল values ব্যবহার করুন
+- এই sensitive credentials কখনও git এ commit করবেন না
+- শুধুমাত্র Render Dashboard থেকে এই values set করুন
 
 ### Step 3: Build Settings Check করুন
 
