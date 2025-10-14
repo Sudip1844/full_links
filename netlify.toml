@@ -1,12 +1,13 @@
 # Netlify Configuration for Client Deployment
 
 [build]
+  # Base directory is set to "client" in Netlify UI
   # Build command for client
-  # Netlify auto-installs deps, but we ensure it here for vite/esbuild
-  command = "npm install && npm run build:client"
+  command = "npm run build:client"
   
-  # Publish directory - where the built files are
-  publish = "client/dist"
+  # Publish directory - relative to base directory (client)
+  # Since base directory is "client", publish directory is just "dist"
+  publish = "dist"
   
   # Environment variables to include in build
   [build.environment]
