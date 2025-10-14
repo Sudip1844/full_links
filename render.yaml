@@ -8,10 +8,10 @@ services:
     plan: free
     
     # Build configuration
-    buildCommand: npm install && npm run build:server
+    buildCommand: npm install && npx esbuild server/index.prod.ts --platform=node --packages=external --bundle --format=esm --outdir=server/dist
     
     # Start command
-    startCommand: node server/dist/index.js
+    startCommand: node server/dist/index.prod.js
     
     # Health check endpoint
     healthCheckPath: /api/health
