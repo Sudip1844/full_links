@@ -52,8 +52,13 @@ VITE_API_URL=https://your-render-app.onrender.com
 ### Step 1: Build করুন (Local Test)
 ```bash
 npm install
-npm run build:server
+npx esbuild server/index.prod.ts --platform=node --packages=external --bundle --format=esm --outdir=server/dist
 ```
+
+**নোট:** 
+- Production build এখন `server/index.prod.ts` ব্যবহার করে যাতে কোনো Vite dependency নেই
+- Render তার নিজের build command execute করবে render.yaml অনুযায়ী
+- Local test এর জন্য উপরের command ব্যবহার করুন
 
 ### Step 2: Render তে Environment Variables সেট করুন
 
@@ -80,14 +85,15 @@ ALLOWED_ORIGINS=https://your-frontend.netlify.app
 
 render.yaml ফাইলে already configured আছে:
 
-- **Build Command**: `npm install && npm run build:server`
-- **Start Command**: `node server/dist/index.js`
+- **Build Command**: `npm install && npx esbuild server/index.prod.ts --platform=node --packages=external --bundle --format=esm --outdir=server/dist`
+- **Start Command**: `node server/dist/index.prod.js`
 - **Health Check**: `/api/health` endpoint (automatically configured)
 
 **সমাধান করা সমস্যা**:
 - ✅ Server এখন Render এর PORT environment variable ব্যবহার করে
 - ✅ `/api/health` endpoint যুক্ত করা হয়েছে health check এর জন্য
 - ✅ CORS configuration ঠিক করা হয়েছে cross-platform connection এর জন্য
+- ✅ Production build এ Vite dependencies exclude করা হয়েছে (সমাধান: Oct 14, 2025)
 
 ---
 

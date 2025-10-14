@@ -75,6 +75,8 @@ The application is built with a React (TypeScript) frontend, an Express.js (Type
 - ✅ Added `/api/health` endpoint for Render health checks
 - ✅ CORS configured with ALLOWED_ORIGINS for cross-platform connection
 - ✅ Documentation updated with detailed environment variable setup
+- ✅ Fixed production build to exclude Vite dependencies (created `server/index.prod.ts`)
+- ✅ Updated render.yaml to use production build without dev dependencies
 
 **Security Notes:**
 - Never commit actual credentials to git
