@@ -74,6 +74,7 @@ ALLOWED_ORIGINS=https://your-frontend.netlify.app
 - এই sensitive credentials কখনও git এ commit করবেন না
 - শুধুমাত্র Render Dashboard থেকে এই values set করুন
 - **ALLOWED_ORIGINS অবশ্যই আপনার Netlify URL এর সাথে মিলতে হবে** (CORS এর জন্য জরুরি)
+- **PORT এবং SERVE_STATIC** সেট করার দরকার নেই - render.yaml এ already configured আছে
 
 ### Step 3: Build Settings Check করুন
 
