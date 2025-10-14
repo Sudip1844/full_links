@@ -837,6 +837,9 @@ function generateShortId() {
   return crypto.randomBytes(3).toString("hex");
 }
 async function registerRoutes(app2) {
+  app2.get("/api/health", async (req, res) => {
+    res.status(200).json({ status: "ok", timestamp: (/* @__PURE__ */ new Date()).toISOString() });
+  });
   app2.get("/api/admin-config", async (req, res) => {
     try {
       console.log("Fetching admin config from API endpoint...");
@@ -1724,7 +1727,7 @@ app.use((req, res, next) => {
       log("Static file serving disabled - API only mode");
     }
   }
-  const port = 5e3;
+  const port = Number(process.env.PORT) || 5e3;
   server.listen({
     port,
     host: "0.0.0.0",
