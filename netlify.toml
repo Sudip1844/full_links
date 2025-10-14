@@ -1,11 +1,16 @@
 # Netlify Configuration for Client Deployment
 
 [build]
-  # Build command for client (npm install runs automatically before this)
+  # Build command for client
+  # Netlify auto-installs deps, but we ensure it here for vite/esbuild
   command = "npm install && npm run build:client"
   
   # Publish directory - where the built files are
   publish = "client/dist"
+  
+  # Environment variables to include in build
+  [build.environment]
+    NODE_VERSION = "20"
 
 # SPA (Single Page Application) redirect rules
 # This ensures all routes are handled by React Router
