@@ -25,25 +25,25 @@ git commit -m "Ready for deployment"
 git push origin main
 ```
 
-### Step 3: Netlify তে Environment Variables সেট করুন
+### Step 3: Netlify তে Build Settings এবং Environment Variables সেট করুন
 
-Netlify Dashboard → Site Settings → Environment Variables এ যান এবং এই variables গুলো add করুন:
+**Build Settings (Site Settings → Build & Deploy):**
+- **Base directory**: `client`
+- **Build command**: `npm run build:client`
+- **Publish directory**: `dist` (relative to base directory)
+- **Node version**: 20
+
+**Environment Variables (Site Settings → Environment Variables):**
+
+Frontend শুধুমাত্র backend API call করে, Supabase সরাসরি use করে না। তাই শুধু একটা variable লাগবে:
 
 ```
-VITE_BACKEND_URL=https://your-render-app.onrender.com
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+VITE_API_URL=https://your-render-app.onrender.com
 ```
 
-**⚠️ গুরুত্বপূর্ণ**: উপরের placeholder values এর জায়গায় আপনার আসল values ব্যবহার করুন!
-
-### Step 4: Build Settings Check করুন
-
-Netlify Dashboard → Site Settings → Build & Deploy তে:
-
-- **Build command**: `npm install && npm run build:client`
-- **Publish directory**: `client/dist`
-- **Node version**: 20 (set in netlify.toml)
+**⚠️ গুরুত্বপূর্ণ**: 
+- আপনার Render backend URL দিয়ে replace করুন
+- Supabase keys লাগবে না frontend এ!
 
 ---
 

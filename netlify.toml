@@ -2,8 +2,8 @@
 
 [build]
   # Base directory is set to "client" in Netlify UI
-  # Build command for client
-  command = "npm run build:client"
+  # Build command - go to root, install deps, and build
+  command = "cd .. && npm install && npm run build:client"
   
   # Publish directory - relative to base directory (client)
   # Since base directory is "client", publish directory is just "dist"
