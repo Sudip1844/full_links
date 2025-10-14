@@ -73,6 +73,7 @@ ALLOWED_ORIGINS=https://your-frontend.netlify.app
 - উপরের সব placeholder values এর জায়গায় আপনার আসল values ব্যবহার করুন
 - এই sensitive credentials কখনও git এ commit করবেন না
 - শুধুমাত্র Render Dashboard থেকে এই values set করুন
+- **ALLOWED_ORIGINS অবশ্যই আপনার Netlify URL এর সাথে মিলতে হবে** (CORS এর জন্য জরুরি)
 
 ### Step 3: Build Settings Check করুন
 
@@ -80,6 +81,12 @@ render.yaml ফাইলে already configured আছে:
 
 - **Build Command**: `npm install && npm run build:server`
 - **Start Command**: `node server/dist/index.js`
+- **Health Check**: `/api/health` endpoint (automatically configured)
+
+**সমাধান করা সমস্যা**:
+- ✅ Server এখন Render এর PORT environment variable ব্যবহার করে
+- ✅ `/api/health` endpoint যুক্ত করা হয়েছে health check এর জন্য
+- ✅ CORS configuration ঠিক করা হয়েছে cross-platform connection এর জন্য
 
 ---
 
