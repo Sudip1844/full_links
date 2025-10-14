@@ -47,8 +47,8 @@ The application is built with a React (TypeScript) frontend, an Express.js (Type
 ## Deployment Configuration (Updated: Oct 14, 2025)
 
 **Environment Variables:**
-- Client (.env): Uses `VITE_` prefix for all variables (VITE_BACKEND_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
-- Server (.env): Contains DATABASE_URL, SUPABASE credentials, FRONTEND_URL, and NODE_ENV
+- Client (.env): Uses `VITE_` prefix for all variables (VITE_API_URL for backend connection)
+- Server (.env): Contains DATABASE_URL, SUPABASE credentials, FRONTEND_URL, ALLOWED_ORIGINS, and NODE_ENV
 - Both .env files are in .gitignore for security
 - Use .env.example files as templates
 
@@ -63,10 +63,19 @@ The application is built with a React (TypeScript) frontend, an Express.js (Type
   - Build command: `npm install && npm run build:client`
   - Publish directory: `client/dist`
   - Node version: 20
+  - Environment variable: VITE_API_URL (Render backend URL)
 - **Render (Backend)**:
   - Build command: `npm install && npm run build:server` 
   - Start command: `node server/dist/index.js`
+  - Health check: `/api/health` endpoint
+  - Environment variables: NODE_ENV, DATABASE_URL, SUPABASE credentials, ALLOWED_ORIGINS (Netlify URL)
   
+**Recent Fixes (Oct 14, 2025):**
+- ✅ Server now uses `process.env.PORT` for Render compatibility (auto-assigned port)
+- ✅ Added `/api/health` endpoint for Render health checks
+- ✅ CORS configured with ALLOWED_ORIGINS for cross-platform connection
+- ✅ Documentation updated with detailed environment variable setup
+
 **Security Notes:**
 - Never commit actual credentials to git
 - Set environment variables via Netlify/Render dashboards
