@@ -9,7 +9,9 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: async ({ queryKey }) => {
-        const url = Array.isArray(queryKey) ? queryKey.join('') : String(queryKey);
+        // For hierarchical query keys like ['/api/items', id], use only the first element as the URL
+        // The other elements are for cache segmentation, not URL construction
+        const url = Array.isArray(queryKey) ? queryKey[0] : String(queryKey);
         const fullUrl = `${API_BASE_URL}${url}`;
         const response = await fetch(fullUrl, {
           credentials: 'include', // Include credentials for CORS
