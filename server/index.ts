@@ -2,7 +2,17 @@ import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+
+// Simple log function (no vite dependency)
+function log(message: string, source = "express") {
+  const formattedTime = new Date().toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+  console.log(`${formattedTime} [${source}] ${message}`);
+}
 
 const app = express();
 
@@ -79,12 +89,16 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
+    // Dynamic import to avoid bundling vite in production
+    const { setupVite } = await import("./vite");
     await setupVite(app, server);
   } else {
     // In production, only serve static files if SERVE_STATIC is explicitly set to 'true'
     // This allows for separate deployments where client is hosted elsewhere (e.g., Netlify)
     const shouldServeStatic = process.env.SERVE_STATIC === 'true';
     if (shouldServeStatic) {
+      // Dynamic import to avoid bundling vite in production
+      const { serveStatic } = await import("./vite");
       serveStatic(app);
       log('Serving static files from client/dist');
     } else {
