@@ -43,3 +43,32 @@ The application is built with a React (TypeScript) frontend, an Express.js (Type
 - **TanStack Query:** For state management in the frontend.
 - **Tailwind CSS:** For styling.
 - **shadcn/ui:** UI component library.
+
+## Deployment Configuration (Updated: Oct 14, 2025)
+
+**Environment Variables:**
+- Client (.env): Uses `VITE_` prefix for all variables (VITE_BACKEND_URL, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
+- Server (.env): Contains DATABASE_URL, SUPABASE credentials, FRONTEND_URL, and NODE_ENV
+- Both .env files are in .gitignore for security
+- Use .env.example files as templates
+
+**Build Configuration:**
+- `vite` and `esbuild` moved to dependencies (not devDependencies) for production builds
+- Client build: `npm run build:client` → creates `client/dist/`
+- Server build: `npm run build:server` → creates `server/dist/`
+- Dist folders are committed to git for deployment
+
+**Deployment Setup:**
+- **Netlify (Frontend)**: 
+  - Build command: `npm install && npm run build:client`
+  - Publish directory: `client/dist`
+  - Node version: 20
+- **Render (Backend)**:
+  - Build command: `npm install && npm run build:server` 
+  - Start command: `node server/dist/index.js`
+  
+**Security Notes:**
+- Never commit actual credentials to git
+- Set environment variables via Netlify/Render dashboards
+- Rotate Supabase keys if accidentally exposed
+- See SECURITY_WARNING.md and DEPLOYMENT.md for details
