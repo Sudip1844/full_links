@@ -1,8 +1,8 @@
 # Netlify Configuration for Client Deployment
 
 [build]
-  # Build command for client
-  command = "npm run build:client"
+  # Build command for client (npm install runs automatically before this)
+  command = "npm install && npm run build:client"
   
   # Publish directory - where the built files are
   publish = "client/dist"

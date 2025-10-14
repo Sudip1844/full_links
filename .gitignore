@@ -17,6 +17,7 @@ client/.env.client
 # Build outputs
 build/
 out/
+# Note: dist/ folders are NOT ignored - they need to be committed for deployment
 
 # Runtime files
 *.log
