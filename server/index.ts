@@ -81,7 +81,15 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    // In production, only serve static files if SERVE_STATIC is explicitly set to 'true'
+    // This allows for separate deployments where client is hosted elsewhere (e.g., Netlify)
+    const shouldServeStatic = process.env.SERVE_STATIC === 'true';
+    if (shouldServeStatic) {
+      serveStatic(app);
+      log('Serving static files from client/dist');
+    } else {
+      log('Static file serving disabled - API only mode');
+    }
   }
 
   // ALWAYS serve the app on port 5000
